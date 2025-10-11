@@ -14,48 +14,47 @@ class CreateController
         return view('discipline/index');
     }
 
-    public function store()
-    {
-        $validacao = Validacao::validar([
-            'name' => ['required', 'min:3', 'max:255'],
-            'description'   => ['required'],
-        ], request()->all());
+    // public function store()
+    // {
+    //     $validacao = Validacao::validar([
+    //         'name' => ['required', 'min:3', 'max:255'],
+    //         'description'   => ['required'],
+    //     ], request()->all());
 
-        if ($validacao->naoPassou()) {
-            return view('/discipline');
-        }
+    //     if ($validacao->naoPassou()) {
+    //         return view('/discipline');
+    //     }
 
-        Discipline::create([
-            'idUser' => auth()->id,
-            'name'     => request()->post('name'),
-            'color'       => request()->post('color'),
-            'description'       => request()->post('description'),
-        ]);
+    //     Discipline::create([
+    //         'idUser' => auth()->id,
+    //         'name'     => request()->post('name'),
+    //         'color'       => request()->post('color'),
+    //         'description'       => request()->post('description'),
+    //     ]);
 
-        flash()->push('mensagem', 'Disciplina criada com sucesso!');
+    //     flash()->push('mensagem', 'Disciplina criada com sucesso!');
 
-        return redirect('/discipline');
-    }
+    //     return redirect('/discipline');
+    // }
 
     public function storeAjax()
     {
-        // Validação
+
         $validacao = Validacao::validar([
             'name'        => ['required', 'min:3', 'max:255'],
             'description' => ['required'],
         ], request()->all());
 
         if ($validacao->naoPassou()) {
-            // Retorna erros em JSON
+
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'errors'  => $validacao->erros()  // supondo que esse método exista
+                'errors'  => flash()->get('validacoes')  // supondo que esse método exista
             ]);
             return;
         }
 
-        // Criação da disciplina
         $idDiscipline = Discipline::create([
             'idUser'      => auth()->id,
             'name'        => request()->post('name'),
@@ -64,7 +63,6 @@ class CreateController
         ]);
 
 
-        // Retorna sucesso em JSON
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,

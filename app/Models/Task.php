@@ -17,8 +17,8 @@ class Task
     public string $priority;
     public int $idDiscipline;
     public int $idUser;
-    public DateTime $startDate;
-    public DateTime $endDate;
+    public string $startDate;
+    public string $endDate;
 
     public function dataCriacao()
     {
@@ -37,7 +37,7 @@ class Task
 
         return $db->query(
             query: 'select * from task where idUser = :idUser ' . (
-                $pesquisar ? 'and titulo like :pesquisar' : null
+                $pesquisar ? 'and name like :pesquisar' : null
             ),
             class: self::class,
             params: array_merge(['idUser' => auth()->id], $pesquisar ? ['pesquisar' => "%$pesquisar%"] : [])
@@ -62,8 +62,7 @@ class Task
                 )
             ',
             params: array_merge($data, [
-                'startDate'     => date('Y-m-d H:i:s'),
-                'endDate' => date('Y-m-d H:i:s'),
+                'startDate'     => (new \DateTime())->format('Y-m-d H:i:s'),
             ])
         );
     }

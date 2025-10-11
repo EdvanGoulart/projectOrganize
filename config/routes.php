@@ -27,6 +27,8 @@ use Core\Route;
     ->get('/logout', LogoutController::class, AuthMiddleware::class)
 
     ->get('/task', Task\IndexController::class, AuthMiddleware::class)
+    ->get('/task/list', Task\TaskListController::class, AuthMiddleware::class)
+    ->post('/task/create', [Task\CreateController::class, 'storeAjax'], AuthMiddleware::class)
 
 
 

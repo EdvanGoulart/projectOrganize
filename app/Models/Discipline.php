@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Core\Database;
+use PDO;
 
 class Discipline
 {
@@ -73,6 +74,18 @@ class Discipline
         );
 
         return $id;
+    }
+
+    public static function verificaExisteVinculo($id)
+    {
+        $db = new Database(config('database'));
+        $stmt = $db->query(
+            query: "SELECT COUNT(*) as total FROM task WHERE idDiscipline = :id",
+            params: ['id' => $id]
+        );
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) ($row['total'] ?? 0);
     }
 
     public static function delete($id)

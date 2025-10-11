@@ -7,7 +7,7 @@ namespace App\Controllers\Task;
 use App\Models\Discipline;
 use App\Models\Task;
 
-class IndexController
+class TaskListController
 {
     public function __invoke()
     {
@@ -19,9 +19,6 @@ class IndexController
             request()->get('pesquisar')
         );
 
-        return view('task/index', [
-            'disciplineList' => $disciplineList,
-            'taskList' => $taskList
-        ]);
+        echo json_encode(["success" => true, "tasks" => $taskList, "discipline" => $disciplineList]);
     }
 }

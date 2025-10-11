@@ -1,5 +1,3 @@
-<?php $validacoes = flash()->get('validacoes');  ?>
-
 <div class="w-full">
 
     <form id="formDiscipline" action="/discipline/create" class="max-w-3xl mx-auto mt-5" method="POST">
@@ -8,17 +6,15 @@
             <div class="">
                 <div class="mb-5">
                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nome</label>
-                    <input type="text" id="name" name="name" <?= isset($disciplineList) ? "value='{$disciplineList->name}'" : '' ?> class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light" />
-                    <?php if (isset($validacoes['name'])) { ?>
-                        <div class="mt-1 text-xs text-error"><?= $validacoes['name'][0] ?></div>
-                    <?php } ?>
+                    <input type="text" id="name" name="name" class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light" />
+                    <div id="error-name" class="mt-1 text-xs text-error "></div>
                 </div>
             </div>
 
             <div class="flex">
                 <div class="mb-5 w-[45%] mr-2">
                     <label for="color" class="block text-sm font-medium mb-2 dark:text-white">Cor da etiqueta</label>
-                    <input type="color" id="color" name="color" <?= isset($disciplineList) ? "value='{$disciplineList->color}'" : '' ?> class="p-1 h-10 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700" id="hs-color-input" value="#2563eb" title="Choose your color">
+                    <input type="color" id="color" name="color" class="p-1 h-10 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700" id="hs-color-input" value="#2563eb" title="Choose your color">
                 </div>
             </div>
 
@@ -26,11 +22,8 @@
                 <div class=" w-full">
                     <label for="description" class="block text-sm font-medium mb-2 dark:text-white">Descrição</label>
                     <textarea id="description" name="description" class="py-2 px-3 sm:py-3 sm:px-4 block w-full border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" rows="3" placeholder="">
-                        <?= isset($disciplineList) ? $disciplineList->description : '' ?>
+
                     </textarea>
-                    <?php if (isset($validacoes['description'])) { ?>
-                        <div class="mt-1 text-xs text-error"><?= $validacoes['description'][0] ?></div>
-                    <?php } ?>
                 </div>
             </div>
 
@@ -172,17 +165,25 @@
                         }
 
                     } else {
-                        // Exibe erro vindo do back-end
-                        Swal.fire({
-                            title: 'Erro!',
-                            html: response.message,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                        if (response.errors) {
+                            if (response.errors['name']) {
+                                $('#error-name').text('');
+                                $('#error-name').text(response.errors['name'][0]);
+                            }
+                        } else {
+                            Swal.fire({
+                                title: 'Erro!',
+                                html: response.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+
                     }
+
+
                 },
                 error: function(xhr, status, error) {
-                    console.error(error);
                     Swal.fire({
                         title: 'Erro!',
                         text: 'Ocorreu um erro no cadastro.',
@@ -298,6 +299,4 @@
     $('#btnCancelar').on('click', function() {
         resetForm();
     });
-</script>
-
 </script>

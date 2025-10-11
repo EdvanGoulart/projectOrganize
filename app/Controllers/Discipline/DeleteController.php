@@ -11,7 +11,7 @@ class DeleteController
 {
     public function __invoke()
     {
-        header('Content-Type: application/json'); // importante para AJAX
+        header('Content-Type: application/json');
 
         $dados = request()->all();
 
@@ -28,6 +28,15 @@ class DeleteController
         }
 
         $id = (int)$dados['id'];
+
+        if (Discipline::verificaExisteVinculo($id)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Existe tarefas vinculadas a esta disciplina !',
+                'id' => $id
+            ]);
+            exit;
+        }
 
         $deletado = Discipline::delete($id);
 
