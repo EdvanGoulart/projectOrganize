@@ -1,65 +1,65 @@
 <main class="bg-gray-300 w-full">
 
-    <div class=" mx-auto max-w-7xl min-h-screen px-2 sm:px-6 lg:px-8 flex justify-between rounded-xl bg-white border border-gray-200 shadow-2xs rounded-xl p-4">
-        <div class="flex flex-col w-1/4 m-2 bg-gray-100 border border-gray-900 shadow-2xs rounded-xl">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-5 flex justify-between rounded-xl bg-[#eae9ea] border border-gray-200 shadow-2xs rounded-xl p-4">
+        <div class="flex flex-col w-1/4 max-h-[88vh]  m-2 bg-[#101204] border border-gray-900 shadow-2xs rounded-xl">
             <div class="p-3 md:p-3 flex flex-col h-full">
-                <h3 class="text-lg font-bold text-gray-800 mb-5">
+                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">
                     Pendente
                 </h3>
-                <div id="pendingList">
+                <div id="pendingList" class="min-h-[30vh] max-h-[70vh] overflow-auto pr-1 custom-scroll">
 
                 </div>
             </div>
             <div class="text-center">
-                <label for="crud-modal" class="btn btn-neutral w-1/2 mb-2 cursor-pointer">
+                <label for="crud-modal" class="btn btn-outline w-1/2 mb-2 cursor-pointer">
                     Nova Tarefa
                 </label>
             </div>
         </div>
-        <div class="flex flex-col w-1/4 m-2 bg-gray-100 border border-gray-900 shadow-2xs rounded-xl ">
+        <div class="flex flex-col w-1/4 max-h-[88vh] m-2 bg-[#101204] border border-gray-900 shadow-2xs rounded-xl ">
             <div class="p-3 md:p-3 flex flex-col h-full">
-                <h3 class="text-lg font-bold text-gray-800 mb-5">
+                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">
                     Andamento
                 </h3>
-                <div id="progressList" class="mb-3">
+                <div id="progressList" class="min-h-[30vh] max-h-[70vh] overflow-auto pr-1 custom-scroll">
 
                 </div>
             </div>
             <div class="text-center">
-                <label for="crud-modal" class="btn btn-neutral w-1/2 mb-2 cursor-pointer">
+                <label for="crud-modal" class="btn btn-outline w-1/2 mb-2 cursor-pointer">
                     Nova Tarefa
                 </label>
             </div>
         </div>
-        <div class="flex flex-col w-1/4 m-2 bg-gray-100 border border-gray-900 shadow-2xs rounded-xl ">
+        <div class="flex flex-col w-1/4 max-h-[88vh] m-2 bg-[#101204] border border-gray-900 shadow-2xs rounded-xl ">
             <div class="p-3 md:p-3 flex flex-col h-full">
-                <h3 class="text-lg font-bold text-gray-800 mb-5">
+                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">
                     Revisão
                 </h3>
-                <div id="reviewList">
+                <div id="reviewList" class="min-h-[30vh] max-h-[70vh] overflow-auto pr-1 custom-scroll">
 
                 </div>
             </div>
 
             <div class="text-center">
-                <label for="crud-modal" class="btn btn-neutral w-1/2 mb-2 cursor-pointer">
+                <label for="crud-modal" class="btn btn-outline w-1/2 mb-2 cursor-pointer">
                     Nova Tarefa
                 </label>
             </div>
 
         </div>
-        <div class="flex flex-col w-1/4 m-2 bg-gray-100 border border-gray-900 shadow-2xs rounded-xl ">
+        <div class="flex flex-col w-1/4 max-h-[88vh] m-2 bg-[#101204] border border-gray-900 shadow-2xs rounded-xl ">
             <div class="p-3 md:p-3 flex flex-col h-full">
-                <h3 class="text-lg font-bold text-gray-800 mb-5">
+                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">
                     Concluído
                 </h3>
-                <div id="completedList">
+                <div id="completedList" class="min-h-[30vh] max-h-[70vh] overflow-auto pr-1 custom-scroll">
 
                 </div>
 
             </div>
             <div class="text-center">
-                <label for="crud-modal" class="btn btn-neutral w-1/2 mb-2 cursor-pointer">
+                <label for="crud-modal" class="btn btn-outline w-1/2 mb-2 cursor-pointer">
                     Nova Tarefa
                 </label>
             </div>
@@ -67,7 +67,7 @@
     </div>
 
 
-    <div class="grafico mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 bg-amber-200">
+    <div class="grafico mx-auto max-w-7xl h-100 px-2 sm:px-6 lg:px-8 bg-amber-200">
         <div>
             filtro
         </div>
@@ -90,14 +90,14 @@
         <label for="crud-modal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
 
         <!-- Cabeçalho -->
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-[#eae9ea] mb-4">
             Criar nova tarefa
         </h3>
 
         <!-- Formulário -->
         <form id="form-task" class="space-y-4">
             <div>
-                <label for="name" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                <label for="name" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                     Nome
                 </label>
                 <input type="text" name="name" id="name" class="input input-bordered w-full" required />
@@ -105,7 +105,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label for="status" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    <label for="status" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                         Status
                     </label>
                     <select id="status" name="status" class="select select-bordered w-full" required>
@@ -118,7 +118,7 @@
                 </div>
 
                 <div>
-                    <label for="priority" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    <label for="priority" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                         Prioridade
                     </label>
                     <select id="priority" name="priority" class="select select-bordered w-full" required>
@@ -131,7 +131,7 @@
             </div>
 
             <div>
-                <label for="endDate" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                <label for="endDate" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                     Data entrega
                 </label>
                 <input type="date" name="endDate" id="endDate" class="input input-bordered w-full" required />
@@ -139,7 +139,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label for="discipline" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    <label for="discipline" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                         Disciplina
                     </label>
                     <select id="discipline" name="discipline" class="select select-bordered w-full">
@@ -160,7 +160,7 @@
             </div>
 
             <div>
-                <label for="description" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                <label for="description" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                     Descrição
                 </label>
                 <textarea id="description" name="description" rows="4" class="textarea textarea-bordered w-full"></textarea>
@@ -180,6 +180,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-pap...SeuHashAqui..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script>
     $('#form-task').submit(function(e) {
         e.preventDefault();
@@ -219,47 +220,49 @@
 
 
                 function gerarHTMLTask(task) {
+                    console.log(task);
                     return `
-    <div class="group w-full bg-gray-300 flex p-0 border rounded-xl mb-2 relative transition hover:shadow-md">
-        <!-- Faixa de cor da disciplina -->
-        <div style="background-color: ${task.disciplineColor}" class="w-[5%] rounded-l-xl"></div>
+                        <div id="task_${task.id}" class="group w-full bg-[#242528] flex p-0 border border-transparent rounded-xl mb-2 relative transition hover:shadow-md">
+                            <!-- Faixa de cor da disciplina -->
+                            <div style="background-color: ${task.disciplineColor}" class="w-[5%] rounded-l-xl"></div>
+                            
 
-        <!-- Conteúdo -->
-        <div class="w-[95%] p-3">
-            <div class="flex justify-between items-start">
-                <h3 class="font-bold break-words">${task.name}</h3>
+                            <!-- Conteúdo -->
+                            <div class="w-[95%] p-3">
+                                <div class="flex justify-between items-start h-5">
+                                    <h3 class="font-bold break-words ">${task.name}</h3>
+                                    
 
-                <!-- Botão de opções (aparece no hover) -->
-                <div class="relative hidden group-hover:block">
-                    <button type="button" class="btn btn-sm btn-circle btn-info" onclick="toggleOptions(this)">
-                        <i class="fa-solid fa-ellipsis"></i>
-                    </button>
+                                    <!-- Botão de opções (aparece no hover) -->
+                                    <div class="relative hidden group-hover:block">
+                                        <button type="button" class="btn btn-sm btn-circle btn-active" onclick="toggleOptions(this)">
+                                            <i class="fa-solid fa-ellipsis"></i>
+                                        </button>
 
-                    <!-- Menu de opções -->
-                    <div class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border hidden z-50">
-                        <ul class="text-sm text-gray-700">
-                            <li>
-                                <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100"
-                                    onclick="editar(${task.id})">
-                                    <i class="fa-solid fa-pen mr-2"></i> Editar
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100"
-                                    onclick="excluir(${task.id})">
-                                    <i class="fa-solid fa-trash mr-2 text-red-600"></i> Excluir
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+                                        <!-- Menu de opções -->
+                                        <div class="absolute right-0 mt-2 w-32 bg-[#242528] rounded-lg shadow-lg border border-transparent hidden z-50">
+                                            <ul class="text-sm text-gray-700">
+                                                <li>
+                                                    <button type="button" class="w-full text-left text-white px-4 py-2 hover:bg-[#101204] hover:rounded-lg"
+                                                        onclick="editar(${task.id})">
+                                                        <i class="fa-solid fa-pen mr-2"></i> Editar
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="w-full text-left text-white px-4 py-2 hover:bg-[#101204] hover:rounded-lg"
+                                                        onclick="excluir(${task.id})">
+                                                        <i class="fa-solid fa-trash mr-2 text-red-600"></i> Excluir
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
 
-            <!-- Descrição -->
-            <p class="mt-1 break-words">${task.description}</p>
-        </div>
-    </div>
-    `;
+                                <p class="mt-2 break-words text-[#bfc1c4]">${task.description}</p>
+                            </div>
+                        </div>
+                     `;
                 }
 
                 // Loop nas tarefas
@@ -299,6 +302,53 @@
             menu.classList.add('hidden');
         }
     }
+
+    function excluir(id) {
+        const divTask = $("#task_" + id);
+
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: 'Esta ação não poderá ser desfeita!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, deletar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/task/delete',
+                    type: 'POST',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        Swal.fire({
+                            title: response.success ? 'Sucesso!' : 'Erro!',
+                            text: response.message,
+                            icon: response.success ? 'success' : 'error',
+                            confirmButtonText: 'OK',
+                            timer: response.success ? 2000 : undefined,
+                            timerProgressBar: response.success
+                        });
+
+                        if (response.success) {
+                            divTask.fadeOut(500, function() {
+                                divTask.remove();
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Erro!', 'Ocorreu um erro inesperado.', 'error');
+                    }
+                });
+            }
+        });
+
+    }
+
 
     // Fecha o menu se clicar fora
     document.addEventListener('click', function(e) {

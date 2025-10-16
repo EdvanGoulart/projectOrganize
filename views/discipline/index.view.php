@@ -44,259 +44,249 @@
         </div>
     </form>
 
-
-
-    <div class="relative mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <div class="max-w-7xl mx-auto p-4 border rounded">
+        <table class="w-full table-fixed text-sm text-left border-collapse">
+            <!-- head -->
+            <thead>
                 <tr>
-                    <th scope="col" class="px-6 py-3">
-                        Disciplina
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Color
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Descrição
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Ação
-                    </th>
+                    <th class="w-1/4 px-4 py-2">Disciplina</th>
+                    <th class="w-1/4 px-4 py-2">Color</th>
+                    <th class="w-3/4 px-4 py-2">Descrição</th>
+                    <th class="w-1/4 px-4 py-2 text-center">Ação</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($disciplineList as $discipline) : ?>
                     <?php  ?>
-                    <tr class="bg-white border-b dark:bg-gray-200 dark:border-gray-700 border-gray-200"
+                    <tr class="border-t"
                         data-id="<?= $discipline->id; ?>"
                         data-name="<?= htmlspecialchars($discipline->name); ?>"
                         data-description="<?= htmlspecialchars($discipline->description); ?>"
                         data-color="<?= htmlspecialchars($discipline->color); ?>">
-                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        <td class="px-4 py-2 break-words whitespace-normal">
                             <?= $discipline->name ?>
                         </td>
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        <td class="px-4 py-2 break-words whitespace-normal">
                             <?= $discipline->color ?>
                         </td>
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        <td class="px-4 py-2 break-words whitespace-normal">
                             <?= $discipline->description ?>
                         </td>
 
-                        <td class="px-6 py-4 flex justify-evenly">
-                            <button class="btn-edit text-blue-600" data-id="<?= $discipline->id; ?>">Editar</button>
-                            <button class="btn-delete text-red-600" data-id="<?= $discipline->id; ?>">Excluir</button>
+                        <td class="px-4 py-2 break-words whitespace-normal flex justify-evenly">
+                            <button class="btn-edit btn btn-outline btn-info" data-id="<?= $discipline->id; ?>">Editar</button>
+                            <button class="btn-delete btn btn-outline btn-error" data-id="<?= $discipline->id; ?>">Excluir</button>
 
                         </td>
                     </tr>
                 <?php endforeach ?>
-
             </tbody>
         </table>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(function() {
 
-        $('#formDiscipline').on('submit', function(e) {
-            e.preventDefault();
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(function() {
 
-            const id = $('#id').val();
-            const isEdit = id !== ''; // true = edição, false = criação
-            const url = isEdit ? '/discipline/edit' : '/discipline/create';
+            $('#formDiscipline').on('submit', function(e) {
+                e.preventDefault();
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: $(this).serialize(),
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
+                const id = $('#id').val();
+                const isEdit = id !== ''; // true = edição, false = criação
+                const url = isEdit ? '/discipline/edit' : '/discipline/create';
 
-                        // Mensagem dinâmica
-                        Swal.fire({
-                            title: 'Sucesso!',
-                            text: isEdit ? 'Disciplina atualizada com sucesso!' : 'Disciplina cadastrada com sucesso!',
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                            timer: 2000,
-                            timerProgressBar: true
-                        });
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
 
-                        // Limpa os campos e volta para modo "novo"
-                        $('#formDiscipline')[0].reset();
-                        $('#id').val('');
-                        $('#btnSalvar').text('Registrar');
+                            // Mensagem dinâmica
+                            Swal.fire({
+                                title: 'Sucesso!',
+                                text: isEdit ? 'Disciplina atualizada com sucesso!' : 'Disciplina cadastrada com sucesso!',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                timer: 2000,
+                                timerProgressBar: true
+                            });
 
-                        const data = response.data;
+                            // Limpa os campos e volta para modo "novo"
+                            $('#formDiscipline')[0].reset();
+                            $('#id').val('');
+                            $('#btnSalvar').text('Registrar');
 
-                        if (isEdit) {
-                            // Atualiza a linha existente
-                            const $row = $(`tr[data-id="${data.id}"]`);
-                            $row.data('name', data.name);
-                            $row.data('color', data.color);
-                            $row.data('description', data.description);
+                            const data = response.data;
 
-                            $row.find('td:nth-child(1)').text(data.name);
-                            $row.find('td:nth-child(2)').text(data.color);
-                            $row.find('td:nth-child(3)').text(data.description);
+                            if (isEdit) {
+                                // Atualiza a linha existente
+                                const $row = $(`tr[data-id="${data.id}"]`);
+                                $row.data('name', data.name);
+                                $row.data('color', data.color);
+                                $row.data('description', data.description);
 
-                            resetForm();
+                                $row.find('td:nth-child(1)').text(data.name);
+                                $row.find('td:nth-child(2)').text(data.color);
+                                $row.find('td:nth-child(3)').text(data.description);
 
-                        } else {
-                            // Cria uma nova linha na tabela (modo criação)
-                            const newRow = `
-                        <tr class="bg-white border-b dark:bg-gray-200 dark:border-gray-700 border-gray-200"
+                                resetForm();
+
+                            } else {
+                                // Cria uma nova linha na tabela (modo criação)
+                                const newRow = `
+                        <tr class="border-t"
                             data-id="${data.id}"
                             data-name="${data.name}"
                             data-description="${data.description}"
                             data-color="${data.color}"
                         >
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${data.name}</td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${data.color}</td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${data.description}</td>
-                            <td class="px-6 py-4 flex justify-evenly">
-                                <button type="button" class="btn-edit text-blue-600">Editar</button>
-                                <button type="button" class="btn-delete text-red-600" data-id="${data.id}">Excluir</button>
+                            <td class="px-4 py-2 break-words whitespace-normal">${data.name}</td>
+                            <td class="px-4 py-2 break-words whitespace-normal">${data.color}</td>
+                            <td class="px-4 py-2 break-words whitespace-normal">${data.description}</td>
+                            <td class="px-4 py-2 break-words whitespace-normal flex justify-evenly">
+                                <button type="button" class="btn-edit btn btn-outline btn-info">Editar</button>
+                                <button type="button" class="btn-delete btn btn-outline btn-error" data-id="${data.id}">Excluir</button>
                             </td>
                         </tr>
                     `;
-                            $('table tbody').append(newRow);
-                        }
-
-                    } else {
-                        if (response.errors) {
-                            if (response.errors['name']) {
-                                $('#error-name').text('');
-                                $('#error-name').text(response.errors['name'][0]);
+                                $('table tbody').append(newRow);
                             }
+
                         } else {
-                            Swal.fire({
-                                title: 'Erro!',
-                                html: response.message,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-
-                    }
-
-
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({
-                        title: 'Erro!',
-                        text: 'Ocorreu um erro no cadastro.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            });
-        });
-
-
-        //Editar 
-        $(document).on('click', '.btn-edit', function(e) {
-            e.preventDefault();
-
-            const $tr = $(this).closest('tr');
-
-            const id = $tr.data('id');
-            const name = $tr.data('name');
-            const description = $tr.data('description');
-            const color = $tr.data('color');
-
-            Swal.fire({
-                title: 'Editar disciplina?',
-                text: 'Você deseja carregar esses dados para edição?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, editar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Preenche o formulário com os dados da linha
-                    $('#id').val(id);
-                    $('#name').val(name);
-                    $('#description').val(description);
-                    $('#color').val(color);
-
-                    // Altera texto do botão (opcional)
-                    $('#btnSalvar').text('Atualizar');
-                    $('#btnCancelar').removeClass('hidden');
-
-                    // Scroll suave até o formulário (opcional)
-                    $('html, body').animate({
-                        scrollTop: $('#formDiscipline').offset().top - 20
-                    }, 500);
-                }
-            });
-        });
-
-
-
-        // Deletar
-        $(document).on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            const id = $(this).data('id');
-            const $row = $(this).closest('tr');
-
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: 'Esta ação não poderá ser desfeita!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, deletar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/discipline/delete',
-                        type: 'POST',
-                        data: {
-                            id: id
-                        },
-                        dataType: 'json',
-                        success: function(response) {
-                            Swal.fire({
-                                title: response.success ? 'Sucesso!' : 'Erro!',
-                                text: response.message,
-                                icon: response.success ? 'success' : 'error',
-                                confirmButtonText: 'OK',
-                                timer: response.success ? 2000 : undefined,
-                                timerProgressBar: response.success
-                            });
-
-                            if (response.success) {
-                                $row.fadeOut(500, function() {
-                                    $(this).remove();
+                            if (response.errors) {
+                                if (response.errors['name']) {
+                                    $('#error-name').text('');
+                                    $('#error-name').text(response.errors['name'][0]);
+                                }
+                            } else {
+                                Swal.fire({
+                                    title: 'Erro!',
+                                    html: response.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
                                 });
                             }
-                        },
-                        error: function() {
-                            Swal.fire('Erro!', 'Ocorreu um erro inesperado.', 'error');
+
                         }
-                    });
-                }
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Erro!',
+                            text: 'Ocorreu um erro no cadastro.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
+
+
+            //Editar 
+            $(document).on('click', '.btn-edit', function(e) {
+                e.preventDefault();
+
+                const $tr = $(this).closest('tr');
+
+                const id = $tr.data('id');
+                const name = $tr.data('name');
+                const description = $tr.data('description');
+                const color = $tr.data('color');
+
+                Swal.fire({
+                    title: 'Editar disciplina?',
+                    text: 'Você deseja carregar esses dados para edição?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, editar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Preenche o formulário com os dados da linha
+                        $('#id').val(id);
+                        $('#name').val(name);
+                        $('#description').val(description);
+                        $('#color').val(color);
+
+                        // Altera texto do botão (opcional)
+                        $('#btnSalvar').text('Atualizar');
+                        $('#btnCancelar').removeClass('hidden');
+
+                        // Scroll suave até o formulário (opcional)
+                        $('html, body').animate({
+                            scrollTop: $('#formDiscipline').offset().top - 20
+                        }, 500);
+                    }
+                });
+            });
+
+
+
+            // Deletar
+            $(document).on('click', '.btn-delete', function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                const $row = $(this).closest('tr');
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: 'Esta ação não poderá ser desfeita!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, deletar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/discipline/delete',
+                            type: 'POST',
+                            data: {
+                                id: id
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                Swal.fire({
+                                    title: response.success ? 'Sucesso!' : 'Erro!',
+                                    text: response.message,
+                                    icon: response.success ? 'success' : 'error',
+                                    confirmButtonText: 'OK',
+                                    timer: response.success ? 2000 : undefined,
+                                    timerProgressBar: response.success
+                                });
+
+                                if (response.success) {
+                                    $row.fadeOut(500, function() {
+                                        $(this).remove();
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Erro!', 'Ocorreu um erro inesperado.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
         });
 
-    });
+        // Função para resetar o formulário e voltar ao modo "criar"
+        function resetForm() {
+            $('#formDiscipline')[0].reset();
+            $('#id').val('');
+            $('#btnSalvar').text('Registrar');
+            $('#btnCancelar').addClass('hidden');
+        }
 
-    // Função para resetar o formulário e voltar ao modo "criar"
-    function resetForm() {
-        $('#formDiscipline')[0].reset();
-        $('#id').val('');
-        $('#btnSalvar').text('Registrar');
-        $('#btnCancelar').addClass('hidden');
-    }
-
-    // Botão de cancelar
-    $('#btnCancelar').on('click', function() {
-        resetForm();
-    });
-</script>
+        // Botão de cancelar
+        $('#btnCancelar').on('click', function() {
+            resetForm();
+        });
+    </script>

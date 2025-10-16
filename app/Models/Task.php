@@ -36,7 +36,9 @@ class Task
         $db = new Database(config('database'));
 
         return $db->query(
-            query: 'select * from task where idUser = :idUser ' . (
+            query: 'select d.color as disciplineColor,t.* from task t
+                    left join discipline d on (d.id = t.idDiscipline)
+                    where t.idUser = :idUser ' . (
                 $pesquisar ? 'and name like :pesquisar' : null
             ),
             class: self::class,
@@ -97,14 +99,16 @@ class Task
     {
         $db = new Database(config('database'));
 
-        $db->query(
+        $stmt = $db->query(
             query: '
-                delete from task
-                where id = :id
-            ',
+            DELETE FROM task
+            WHERE id = :id
+        ',
             params: [
                 'id' => $id,
             ]
         );
+
+        return $stmt->rowCount() > 0;
     }
 }

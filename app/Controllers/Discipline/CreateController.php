@@ -69,8 +69,9 @@ class CreateController
             'data' => [
                 'id' => $idDiscipline,
                 'name' => request()->post('name'),
+                'color' => request()->post('color'),
                 'description' => request()->post('description'),
-                'color' => request()->post('color')
+
             ]
         ]);
     }

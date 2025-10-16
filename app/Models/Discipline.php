@@ -20,11 +20,11 @@ class Discipline
         $database = new Database(config('database'));
 
         $database->query(
-            query: 'insert into discipline (name, description, color, idUser)
+            query: 'insert into discipline (name, color, description, idUser)
                 values (
                     :name,
-                    :description,
                     :color,
+                    :description,
                     :idUser
                 )
             ',
@@ -47,7 +47,7 @@ class Discipline
         )->fetchAll();
     }
 
-    public static function update($id, $name, $description, $color)
+    public static function update($id, $name, $color, $description)
     {
         $db = new Database(config('database'));
 

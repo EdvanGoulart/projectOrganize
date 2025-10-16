@@ -14,6 +14,33 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 </head>
+<style>
+    .custom-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-track {
+        background: hsl(var(--b2));
+        /* usa cor do tema DaisyUI */
+        border-radius: 4px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+        background: hsl(var(--bc));
+        /* cor do conteúdo/texto do tema */
+        border-radius: 4px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: hsl(var(--bc) / 0.7);
+    }
+
+    /* Firefox */
+    .custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--bc)) hsl(var(--b2));
+    }
+</style>
 
 <body>
     <div class="mx-auto max-w-7xl h-screen flex flex-col space-y-2">

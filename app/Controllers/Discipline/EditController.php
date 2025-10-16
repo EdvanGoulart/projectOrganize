@@ -41,8 +41,9 @@ class EditController
             'data' => [
                 'id' => $idDiscipline,
                 'name' => request()->post('name'),
-                'description' => request()->post('description'),
-                'color' => request()->post('color')
+                'color' => request()->post('color'),
+                'description' => request()->post('description')
+
             ]
         ]);
     }
