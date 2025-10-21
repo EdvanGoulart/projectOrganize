@@ -33,6 +33,12 @@ use Core\Route;
     //rota responsável pela criação das tarefas
     ->post('/task/create', [Task\CreateController::class, 'storeAjax'], AuthMiddleware::class)
     ->post('/task/delete', Task\DeleteController::class, AuthMiddleware::class)
+    ->get('/task/findTask', [Task\EditController::class, 'findTask'], AuthMiddleware::class)
+    ->post('/task/update', [Task\EditController::class, 'updateAjax'], AuthMiddleware::class)
+    ->post('/task/update-status', [Task\EditController::class, 'updateStatus'], AuthMiddleware::class)
+    ->post('/task/update-order', [Task\EditController::class, 'updateOrder'], AuthMiddleware::class)
+    ->get('/task/status-chart', [Task\IndexController::class, 'chartStatus'], AuthMiddleware::class)
+    // ->post('/task/edit', Task\EditController::class, AuthMiddleware::class)
 
 
     //Rotas responsáveis pelo crud da página de disciplina

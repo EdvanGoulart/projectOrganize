@@ -12,6 +12,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
 </head>
 <style>
@@ -39,6 +41,14 @@
     .custom-scroll {
         scrollbar-width: thin;
         scrollbar-color: hsl(var(--bc)) hsl(var(--b2));
+    }
+
+    .task-placeholder {
+        background-color: rgba(36, 37, 40, 0.1);
+        border: 2px dashed #555;
+        height: 60px;
+        margin-bottom: 8px;
+        border-radius: 8px;
     }
 </style>
 

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Core;
 
@@ -32,7 +32,6 @@ class Route
     public function get($uri, $controller, $middleware = null)
     {
         $this->addRoute('GET', $uri, $controller, $middleware);
-
         return $this;
     }
 
