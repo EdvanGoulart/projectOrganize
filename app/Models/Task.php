@@ -164,7 +164,6 @@ class Task
     {
         $db = new Database(config('database'));
 
-        // Atualiza o status e posição da tarefa atual
         $update = $db->query(
             query: 'UPDATE task SET status = :status, position = :position WHERE id = :id',
             params: [
@@ -174,7 +173,6 @@ class Task
             ]
         );
 
-        // Se não atualizou, retorna falso
         if ($update->rowCount() === 0) {
             return false;
         }

@@ -155,7 +155,6 @@
                 <textarea id="description" name="description" rows="4" class="textarea textarea-bordered w-full"></textarea>
             </div>
 
-            <!-- Botão de ação -->
             <div class="modal-action justify-end">
                 <button type="submit" id="btn-submit" class="btn btn-primary inline-flex items-center gap-2">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -256,7 +255,7 @@
     }
 
 
-    // Função para carregar tarefas
+
     function carregarTarefas() {
         $.ajax({
             url: '/task/list',
@@ -265,7 +264,6 @@
             success: function(response) {
                 if (!response.success) return;
 
-                // Objeto para armazenar HTML por status
                 const htmlByStatus = {
                     pending: '',
                     inprogress: '',
@@ -320,17 +318,15 @@
                      `;
                 }
 
-                // Loop nas tarefas
                 response.tasks.forEach(task => {
                     let statusKey = task.status; // 'pending', 'inprogress', 'review', 'completed'
 
-                    // Garante que só vamos preencher os status válidos
                     if (htmlByStatus[statusKey] !== undefined) {
                         htmlByStatus[statusKey] += gerarHTMLTask(task);
                     }
                 });
 
-                // Inserir no DOM
+                // Inserir no DOM 
                 $('#pendingList').html(htmlByStatus.pending);
                 $('#progressList').html(htmlByStatus.inprogress);
                 $('#reviewList').html(htmlByStatus.review);
@@ -359,16 +355,13 @@
     }
 
     function abrirModalCriarTarefa() {
-        // Limpa todos os campos do formulário
         $('#form-task')[0].reset();
 
-        // Limpa campos escondidos e selects
         $('#task_id').val('');
         $('#status').val('');
         $('#priority').val('');
         $('#discipline').val('');
 
-        // Restaura título e botão
         $('#modal-title').text('Criar nova tarefa');
         $('#btn-submit').html(`
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -377,7 +370,6 @@
         Adicionar nova tarefa
     `);
 
-        // Abre o modal (checkbox = true)
         $('#crud-modal').prop('checked', true);
     }
 

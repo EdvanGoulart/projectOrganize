@@ -28,15 +28,6 @@ class DeleteController
 
         $id = (int)$dados['id'];
 
-        // if (Task::verificaExisteVinculo($id)) {
-        //     echo json_encode([
-        //         'success' => false,
-        //         'message' => 'Existe tarefas vinculadas a esta disciplina !',
-        //         'id' => $id
-        //     ]);
-        //     exit;
-        // }
-
         $deletado = Task::delete($id);
 
         if ($deletado) {
