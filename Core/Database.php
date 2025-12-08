@@ -38,10 +38,35 @@ class Database
             $prepare->setFetchMode(PDO::FETCH_CLASS, $class);
         }
 
+        // 🔧 Normaliza os parâmetros antes do execute()
+        if (!is_array($params)) {
+            // Se for string, transforma em array
+            $params = [$params];
+        } elseif (isset($params[0]) && is_array($params[0])) {
+            // Se for array aninhado ([[...]]), pega o primeiro nível
+            $params = $params[0];
+        }
+
         $prepare->execute($params);
 
         return $prepare;
     }
+
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+
+    public function commit()
+    {
+        $this->db->commit();
+    }
+
+    public function rollBack()
+    {
+        $this->db->rollBack();
+    }
+
 
     public function lastInsertId()
     {

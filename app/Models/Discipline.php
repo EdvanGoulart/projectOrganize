@@ -76,7 +76,7 @@ class Discipline
         return $id;
     }
 
-    public static function verificaExisteVinculo($id)
+    public static function verificaExisteVinculo(int $id)
     {
         $db = new Database(config('database'));
         $stmt = $db->query(
@@ -103,5 +103,21 @@ class Discipline
         );
 
         return $stmt->rowCount() > 0;
+    }
+
+    public static function find($id)
+    {
+        $db = new Database(config('database'));
+
+        $stmt = $db->query(
+            'SELECT * FROM discipline WHERE id = :id AND idUser = :idUser',
+            Discipline::class,
+            [
+                'id' => $id->idDiscipline, // Erro aqui de undefined, mas esta sendo passado o parametro
+                'idUser' => auth()->id
+            ]
+        );
+
+        return $stmt->fetch();
     }
 }

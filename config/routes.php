@@ -11,6 +11,8 @@ use App\Middlewares\AuthMiddleware;
 use App\Middlewares\GuestMiddleware;
 use App\Controllers\Task;
 use App\Controllers\Discipline;
+use App\Controllers\Deck;
+use App\Models\Deck as ModelsDeck;
 use App\Models\Task as ModelsTask;
 use Core\Route;
 
@@ -38,6 +40,7 @@ use Core\Route;
     ->post('/task/update-status', [Task\EditController::class, 'updateStatus'], AuthMiddleware::class)
     ->post('/task/update-order', [Task\EditController::class, 'updateOrder'], AuthMiddleware::class)
     ->get('/task/status-chart', [Task\IndexController::class, 'chartStatus'], AuthMiddleware::class)
+    ->get('/task/prioridade-chart', [Task\IndexController::class, 'chartPriority'], AuthMiddleware::class)
     // ->post('/task/edit', Task\EditController::class, AuthMiddleware::class)
 
 
@@ -46,6 +49,16 @@ use Core\Route;
     ->post('/discipline/create', [Discipline\CreateController::class, 'storeAjax'], AuthMiddleware::class)
     ->post('/discipline/delete', Discipline\DeleteController::class, AuthMiddleware::class)
     ->post('/discipline/edit', Discipline\EditController::class, AuthMiddleware::class)
+
+
+    ->get('/deck-list', [Deck\IndexController::class, 'index'], AuthMiddleware::class)
+    ->get('/deck/formCreateDeck', [Deck\IndexController::class, 'formCreateDeck'], AuthMiddleware::class)
+    ->post('/deck/create', [Deck\CreateController::class, 'storeAjax'], AuthMiddleware::class)
+    ->post('/deck/delete', Deck\DeleteController::class, AuthMiddleware::class)
+    ->post('/deck/edit', [Deck\EditController::class, 'findDeckCards'], AuthMiddleware::class)
+    ->post('/deck/update', [Deck\EditController::class, 'updateAjax'], AuthMiddleware::class)
+    ->post('/cards/delete', [Deck\DeleteController::class, 'deleteCardAjax'], AuthMiddleware::class)
+    // ->get('/deck/practice/{id}', [Deck\PracticeController::class, 'index'], AuthMiddleware::class)
 
 
     ->run();

@@ -58,11 +58,35 @@
 
 
 
-    <div class="p-4 bg-[#1e1f23]  shadow-lg flex flex-col items-center">
-        <div class="w-[500px] h-[500px]">
-            <canvas id="chartStatus"></canvas>
+    <div class="p-6 bg-[#1e1f23] shadow-lg flex items-start gap-6">
+        <!-- Filtro (lado esquerdo) -->
+        <div class="w-1/4 flex flex-col">
+            <label for="filtroDisciplina" class="text-white font-semibold mb-2">Filtrar por disciplina:</label>
+            <select id="filtroDisciplina" class="p-2 rounded-md bg-white text-black">
+                <option value="">Selecione</option>
+                <?php foreach ($disciplineList as $discipline) : ?>
+                    <option value="<?= $discipline->id ?>"><?= $discipline->name ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <!-- Gráficos (lado direito) -->
+        <div class="w-3/4 flex gap-4">
+            <!-- Gráfico de Status -->
+            <div class="flex-1 flex flex-col items-center">
+                <h2 class="text-white font-bold mb-2">Tarefas por Status</h2>
+                <canvas id="chartStatus" class="w-full h-[150px]"></canvas>
+            </div>
+
+            <!-- Gráfico de Prioridade -->
+            <div class="flex-1 flex flex-col items-center">
+                <h2 class="text-white font-bold mb-2">Tarefas por Prioridade</h2>
+                <canvas id="chartPrioridade" class="w-full h-[150px]"></canvas>
+            </div>
         </div>
     </div>
+
+
 
 </main>
 
@@ -167,8 +191,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-pap...SeuHashAqui..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script>
     $('#form-task').submit(function(e) {
         e.preventDefault();
@@ -204,6 +226,7 @@
                     $('#crud-modal').prop('checked', false);
                     carregarTarefas();
                     carregarGraficoStatus();
+                    carregarGraficoPrioridade();
                 }
             },
             error: function(xhr, status, error) {
@@ -420,9 +443,14 @@
     }
 
     function carregarGraficoStatus() {
+        const idDisciplina = $('#filtroDisciplina').val(); // pega o valor do filtro
+
         $.ajax({
             url: '/task/status-chart',
             type: 'GET',
+            data: {
+                idDisciplina
+            }, // envia o filtro
             dataType: 'json',
             success: function(response) {
                 if (!response.success) return;
@@ -430,7 +458,13 @@
                 const labels = response.data.map(item => item.status);
                 const valores = response.data.map(item => item.total);
 
-                gerarGraficoPizza(labels, valores);
+                gerarGraficoPizza(
+                    'chartStatus', // id do canvas
+                    labels,
+                    valores,
+                    'Tarefas por Status', // título do gráfico
+                    ['#f87171', '#60a5fa', '#facc15', '#34d399'] // cores
+                );
             },
             error: function(xhr, status, error) {
                 console.error(error);
@@ -438,25 +472,67 @@
         });
     }
 
+    function carregarGraficoPrioridade() {
+        const idDisciplina = $('#filtroDisciplina').val(); // pega o valor do filtro
+
+        $.ajax({
+            url: '/task/prioridade-chart',
+            type: 'GET',
+            data: {
+                idDisciplina
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (!response.success) return;
+                console.log(response.data)
+                const labels = response.data.map(item => item.priority);
+                const valores = response.data.map(item => item.total);
+
+                gerarGraficoPizza(
+                    'chartPrioridade', // id do canvas
+                    labels,
+                    valores,
+                    'Tarefas por Prioridade', // título do gráfico
+                    ['#93c5fd', '#fbbf24', '#f87171', '#ef4444'] // cores
+                );
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    // Atualiza o gráfico ao trocar a disciplina
+    $('#filtroDisciplina').on('change', function() {
+        carregarGraficoStatus();
+        carregarGraficoPrioridade();
+    });
+
+
     let chartStatus = null;
+    let chartPrioridade = null;
 
-    function gerarGraficoPizza(labels, valores) {
-        const ctx = document.getElementById('chartStatus').getContext('2d');
+    function gerarGraficoPizza(canvasId, labels, valores, titulo, cores) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
 
-        if (chartStatus) chartStatus.destroy(); // evita sobreposição
+        // Destroi o gráfico anterior se já existir
+        if (canvasId === 'chartStatus' && chartStatus) chartStatus.destroy();
+        if (canvasId === 'chartPrioridade' && chartPrioridade) chartPrioridade.destroy();
 
-        chartStatus = new Chart(ctx, {
+        // Filtra e formata labels, garantindo que não haja undefined ou null
+        const labelsTratadas = labels
+            .filter(l => l !== undefined && l !== null)
+            .map(l => String(l).charAt(0).toUpperCase() + String(l).slice(1));
+
+        const valoresTratados = valores.slice(0, labelsTratadas.length); // garante que tamanho seja compatível
+
+        const chart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), // Ex: "pending" → "Pending"
+                labels: labelsTratadas,
                 datasets: [{
-                    data: valores,
-                    backgroundColor: [
-                        '#f87171', // pendente
-                        '#60a5fa', // em andamento
-                        '#facc15', // revisão
-                        '#34d399' // concluído
-                    ],
+                    data: valoresTratados,
+                    backgroundColor: cores,
                     borderWidth: 1
                 }]
             },
@@ -471,13 +547,19 @@
                     },
                     title: {
                         display: true,
-                        text: 'Tarefas por Status',
+                        text: titulo,
                         color: '#fff'
                     }
                 }
             }
         });
+
+        // Armazena referência para poder destruir depois
+        if (canvasId === 'chartStatus') chartStatus = chart;
+        if (canvasId === 'chartPrioridade') chartPrioridade = chart;
     }
+
+
 
 
 
@@ -531,6 +613,7 @@
                         success: function(response) {
                             console.log('Tarefa atualizada:', response);
                             carregarGraficoStatus();
+                            carregarGraficoPrioridade();
                         },
                         error: function(xhr, status, error) {
                             console.error('Erro ao atualizar ordem/status:', error);
@@ -553,5 +636,6 @@
     $(document).ready(function() {
         carregarTarefas();
         carregarGraficoStatus();
+        carregarGraficoPrioridade();
     });
 </script>

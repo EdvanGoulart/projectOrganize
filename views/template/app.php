@@ -15,6 +15,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-pap...SeuHashAqui..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <style>
     .custom-scroll::-webkit-scrollbar {
