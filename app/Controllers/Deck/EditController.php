@@ -58,7 +58,7 @@ class EditController
                 return;
             }
 
-            // dd($cards);
+
             echo json_encode([
                 'success' => true,
                 'data' => [

@@ -50,6 +50,7 @@
 
                         <div class="card-actions">
                             <button class="btn btn-primary btn-block">Login</button>
+                            <a href="/forgot-password" class="btn btn-link">Esqueci minha senha</a>
                             <a href="/registrar" class="btn btn-link">Quero me registrar</a>
                         </div>
                     </div>

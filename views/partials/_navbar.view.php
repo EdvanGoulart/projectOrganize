@@ -4,8 +4,11 @@
     </div>
     <div class="flex-1">
         <ul class="menu menu-horizontal px-1">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/task">Tarefas</a></li>
             <li><a href="/discipline">Disciplinas</a></li>
             <li><a href="/deck-list">Revisões</a></li>
+            <li><a href="/deck-list">Conquistas</a></li>
         </ul>
     </div>
 

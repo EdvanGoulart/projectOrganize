@@ -12,6 +12,11 @@ use App\Middlewares\GuestMiddleware;
 use App\Controllers\Task;
 use App\Controllers\Discipline;
 use App\Controllers\Deck;
+use App\Controllers\Revisao;
+use App\Controllers\Dashboard;
+use App\Controllers\Profile;
+use App\Controllers\ForgotPasswordController;
+
 use App\Models\Deck as ModelsDeck;
 use App\Models\Task as ModelsTask;
 use Core\Route;
@@ -22,6 +27,10 @@ use Core\Route;
     ->get('/', IndexController::class, GuestMiddleware::class)
     ->get('/login', [LoginController::class, 'index'], GuestMiddleware::class)
     ->post('/login', [LoginController::class, 'login'], GuestMiddleware::class)
+    ->get('/forgot-password', [ForgotPasswordController::class, 'requestForm'], GuestMiddleware::class)
+    ->post('/forgot-password', [ForgotPasswordController::class, 'sendEmail'], GuestMiddleware::class)
+    ->get('/reset-password', [ForgotPasswordController::class, 'resetForm'], GuestMiddleware::class)
+    ->post('/reset-password', [ForgotPasswordController::class, 'updatePassword'], GuestMiddleware::class)
     ->get('/registrar', [RegisterController::class, 'index'], GuestMiddleware::class)
     ->post('/registrar', [RegisterController::class, 'register'], GuestMiddleware::class)
 
@@ -43,12 +52,19 @@ use Core\Route;
     ->get('/task/prioridade-chart', [Task\IndexController::class, 'chartPriority'], AuthMiddleware::class)
     // ->post('/task/edit', Task\EditController::class, AuthMiddleware::class)
 
+    ->get('/perfil', [Profile\ProfileController::class, 'index'], AuthMiddleware::class)
+    ->post('/perfil', [Profile\ProfileController::class, 'update'], AuthMiddleware::class)
+
 
     //Rotas responsáveis pelo crud da página de disciplina
     ->get('/discipline', Discipline\IndexController::class, AuthMiddleware::class)
     ->post('/discipline/create', [Discipline\CreateController::class, 'storeAjax'], AuthMiddleware::class)
     ->post('/discipline/delete', Discipline\DeleteController::class, AuthMiddleware::class)
     ->post('/discipline/edit', Discipline\EditController::class, AuthMiddleware::class)
+
+
+
+
 
 
     ->get('/deck-list', [Deck\IndexController::class, 'index'], AuthMiddleware::class)
@@ -58,7 +74,14 @@ use Core\Route;
     ->post('/deck/edit', [Deck\EditController::class, 'findDeckCards'], AuthMiddleware::class)
     ->post('/deck/update', [Deck\EditController::class, 'updateAjax'], AuthMiddleware::class)
     ->post('/cards/delete', [Deck\DeleteController::class, 'deleteCardAjax'], AuthMiddleware::class)
+    ->get('/deck/practice', [Deck\PracticeController::class, 'index'], AuthMiddleware::class)
     // ->get('/deck/practice/{id}', [Deck\PracticeController::class, 'index'], AuthMiddleware::class)
+
+    ->post('/deck/revisao/card', [Revisao\Revisao_CardController::class, 'registerReview'], AuthMiddleware::class)
+    ->post('/deck/revisao/finalizar', [Revisao\Revisao_DeckController::class, 'registerReview'], AuthMiddleware::class)
+
+
+    ->get('/dashboard', Dashboard\IndexController::class, AuthMiddleware::class)
 
 
     ->run();

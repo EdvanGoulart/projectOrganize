@@ -14,8 +14,7 @@ class Card
     public string $termo;
     public string $definicao;
     public int $id_deck;
-    public int $revisao_nivel;
-    public ?DateTime $proxima_revisao = null;
+
 
 
     public static function create($id_deck, $termo, $definicao)
@@ -23,8 +22,8 @@ class Card
         $database = new Database(config('database'));
 
         $database->query(
-            'INSERT INTO card (id_deck, termo, definicao, revisao_nivel, proxima_revisao)
-         VALUES (:id_deck, :termo, :definicao, 1, NULL)',
+            'INSERT INTO card (id_deck, termo, definicao)
+         VALUES (:id_deck, :termo, :definicao)',
             null,
             [
                 ':id_deck' => $id_deck,

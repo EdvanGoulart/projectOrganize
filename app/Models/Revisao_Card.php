@@ -9,29 +9,41 @@ use DateTime;
 use Exception;
 use PDO;
 
-class Deck
+enum ResultadoRevisao: string
+{
+    case ACERTO = 'acerto';
+    case ERRO   = 'erro';
+}
+
+class Revisao_Card
 {
     public ?int $id;
-    public string $title;
-    public string $description;
-    public int $idDiscipline;
+    public int  $id_deck;
+    public int  $id_user;
+    public string $data_revisao;
+    public int $tempo_gasto;
+    public int $xp_gerado;
+    public int $total_acertos;
+    public int $total_erros;
+    public ResultadoRevisao $resultado;
 
-    public int $idUser;
 
 
-    public static function create($titulo, $descricao, $disciplina)
+    public static function create($id_deck, $id_card, $resultado, $tempo_gasto)
     {
         $database = new Database(config('database'));
 
         $database->query(
-            'INSERT INTO deck (title, description, idDiscipline, idUser)
-         VALUES (:title, :description, :idDiscipline, :idUser)',
+            'INSERT INTO deck_revisao_card (id_user,id_deck, id_card, resultado, tempo_gasto, data_revisao)
+         VALUES (:id_user,:id_deck, :id_card, :resultado, :tempo_gasto, :data_revisao)',
             null,
             [
-                ':title' => $titulo,
-                ':description' => $descricao,
-                ':idDiscipline' => $disciplina,
-                ':idUser' => auth()->id
+                ':id_user' => auth()->id,
+                ':id_deck' => $id_deck,
+                ':id_card' => $id_card,
+                ':resultado' => ResultadoRevisao::from($resultado)->value,
+                ':tempo_gasto' => $tempo_gasto,
+                'data_revisao' => date('Y-m-d')
             ]
         );
 
@@ -51,20 +63,20 @@ class Deck
         )->fetchAll();
     }
 
-    public static function find(int $id)
+    public static function find(int $id_deck)
     {
         $db = new Database(config('database'));
 
         $stmt = $db->query(
-            'SELECT * FROM deck WHERE id = :id AND idUser = :idUser',
+            'SELECT * FROM deck WHERE id_deck = :id_deck AND idUser = :idUser',
             Deck::class,
             [
-                'id' => $id,
+                'id_deck' => $id_deck,
                 'idUser' => auth()->id
             ]
         );
 
-        return $stmt->fetch(); // já retorna um objeto `Card`
+        return $stmt->fetch(); // já retorna um objeto `Revisao`
     }
 
 

@@ -21,9 +21,14 @@
                                     </div>
 
                                     <p><?= htmlspecialchars($d->description) ?></p>
+
+                                    <div class="flex-1 text-xs">
+                                        <hr class="mt-2 mb-1">
+                                        <strong>Ultima Revisao :</strong> <?= $d->ultima_revisao ?? date('d/m/Y') ?> / <strong>Proxima:</strong> <?= $d->ultima_revisao ?? date('d/m/Y') ?>
+                                    </div>
                                     <div class="card-actions justify-end mt-2">
                                         <a class="btn btn-sm btn-edit-deck" data-id="<?= $d->id; ?>">Cards</a>
-                                        <a href="play.php?deck=<?= $d->id ?>" class="btn btn-sm btn-success">Estudar</a>
+                                        <a href="/deck/practice?id=<?= $d->id ?>" class="btn btn-sm btn-success">Estudar</a>
                                         <?php if (isset($pendMap[$d->id])): ?>
                                             <span class="badge badge-secondary ml-2"><?= $pendMap[$d->id] ?> revisões hoje</span>
                                         <?php endif; ?>
@@ -68,7 +73,6 @@
             dataType: 'json',
             success: function(res) {
                 if (res.success) {
-                    // Preenche os campos
                     $('#deckId').val(res.data.deck.id);
                     $('#titulo').val(res.data.deck.title);
                     $('#descricao').val(res.data.deck.description);
@@ -232,10 +236,7 @@
         $.post('/deck/update', data, function(res) {
             if (res.success) {
                 Swal.fire('Sucesso!', 'Deck atualizado com sucesso!', 'success');
-                $('#editDeckSection').addClass('hidden');
-                $('#lista').removeClass('hidden');
 
-                // location.reload(); // opcional: recarrega a lista
             } else if (res.validacao) {
                 Swal.fire({
                     icon: "warning",
