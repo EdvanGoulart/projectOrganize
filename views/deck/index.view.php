@@ -3,31 +3,36 @@
 
         <?php require base_path('views/partials/_menuOptions.view.php') ?>
 
-        <main id="conteudo" class="w-[80%] flex-1 p-8 overflow-y-auto">
+        <main id="conteudo" class="w-full lg:w-[80%] flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
             <body>
-                <div id="lista" class="max-w-4xl mx-auto">
-                    <h1 class="text-3xl font-bold mb-6">🧠 Meus Decks</h1>
+                <div id="lista" class="max-w-6xl mx-auto">
+                    <h1 class="text-2xl sm:text-3xl font-bold mb-2">🧠 Meus Decks</h1>
+                    <p class="text-sm text-gray-300 mb-6">Acompanhe sua etapa de revisão e estude no momento certo.</p>
 
-                    <div id="lista" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="lista" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
                         <?php foreach ($deckList as $d): ?>
-                            <div class="deckItem bg-base-100 shadow">
-                                <div class="card-body">
-                                    <div class="flex items-center relative">
-                                        <h2 class="card-title flex-1"><?= $d->title ?></h2>
-                                        <button class="relative btn-delete -top-5 left-3 p-1 rounded transition cursor-pointer" data-id="<?= $d->id; ?>">
+                            <div class="deckItem rounded-2xl border border-slate-700/70 bg-slate-800/80 shadow-lg hover:shadow-xl hover:border-slate-500 transition">
+                                <div class="card-body p-4 sm:p-5">
+                                    <div class="flex items-start gap-3">
+                                        <h2 class="card-title flex-1 text-lg sm:text-xl text-white"><?= $d->title ?></h2>
+                                        <button class="btn-delete p-2 rounded-md  cursor-pointer" data-id="<?= $d->id; ?>">
                                             <i class=" fa-solid fa-trash text-red-600"></i>
                                         </button>
                                     </div>
 
-                                    <p><?= htmlspecialchars($d->description) ?></p>
+                                    <p class="text-sm text-slate-200 min-h-[44px]"><?= htmlspecialchars($d->description) ?></p>
 
-                                    <div class="flex-1 text-xs">
+                                    <div class="flex-1 text-xs text-slate-200 bg-slate-900/40 rounded-lg p-3">
                                         <hr class="mt-2 mb-1">
-                                        <strong>Ultima Revisao :</strong> <?= $d->ultima_revisao ?? date('d/m/Y') ?> / <strong>Proxima:</strong> <?= $d->ultima_revisao ?? date('d/m/Y') ?>
+                                        <strong>Última Revisão:</strong> <?= $d->ultima_revisao ? date('d/m/Y', strtotime($d->ultima_revisao)) : 'Sem revisão' ?>
+                                        / <strong>Próxima:</strong> <?= $d->proxima_revisao ?>
+                                        <div class="mt-1 opacity-80">
+                                            <strong>Etapa:</strong> <?= $d->etapa_revisao ?>
+                                        </div>
                                     </div>
-                                    <div class="card-actions justify-end mt-2">
-                                        <a class="btn btn-sm btn-edit-deck" data-id="<?= $d->id; ?>">Cards</a>
+                                    <div class="card-actions flex-wrap justify-end gap-2 mt-3">
+                                        <a class="btn btn-sm btn-outline btn-edit-deck" data-id="<?= $d->id; ?>">Cards</a>
                                         <a href="/deck/practice?id=<?= $d->id ?>" class="btn btn-sm btn-success">Estudar</a>
                                         <?php if (isset($pendMap[$d->id])): ?>
                                             <span class="badge badge-secondary ml-2"><?= $pendMap[$d->id] ?> revisões hoje</span>

@@ -5,156 +5,180 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Core\Database;
-use DateTime;
-use Exception;
-use PDO;
+
 
 class Revisao_Deck
 {
     public ?int $id;
-    public int  $id_deck;
-    public int  $id_user;
+
+    public int $id_deck;
+    public int $id_user;
     public string $data_revisao;
     public int $tempo_gasto;
     public int $xp_gerado;
     public int $total_acertos;
     public int $total_erros;
 
-
-
-    public static function create($id_deck, $tempo_gasto, $total_acertos, $total_erros)
+    public static function create($id_deck, $tempo_gasto, $total_acertos, $total_erros): array
     {
+        $idDeck = (int) $id_deck;
+        $idUser = (int) auth()->id;
+        $hoje = date('Y-m-d');
+
+        $resumo = self::buildScheduleSummary($idDeck, $idUser);
+
+        if (! $resumo['pode_registrar_hoje']) {
+            return [
+                'registrado' => false,
+                'id' => null,
+                'proxima_revisao' => $resumo['proxima_revisao'],
+                'etapa_revisao' => $resumo['etapa_revisao'],
+                'message' => 'Revisão já registrada antes do prazo da próxima etapa.',
+            ];
+        }
+
         $database = new Database(config('database'));
 
         $database->query(
             'INSERT INTO deck_revisao (id_deck, id_user, data_revisao, tempo_gasto, total_acertos, total_erros)
-         VALUES (:id_deck, :id_user, :data_revisao, :tempo_gasto, :total_acertos, :total_erros)',
+          VALUES (:id_deck, :id_user, :data_revisao, :tempo_gasto, :total_acertos, :total_erros)',
             null,
             [
-                ':id_deck' => $id_deck,
-                ':id_user' => auth()->id,
-                ':data_revisao' => date('Y-m-d'),
-                ':tempo_gasto' => $tempo_gasto,
-                'total_acertos' => $total_acertos,
-                'total_erros' => $total_erros
+                ':id_deck' => $idDeck,
+                ':id_user' => $idUser,
+                ':data_revisao' => $hoje,
+                ':tempo_gasto' => (int) $tempo_gasto,
+                'total_acertos' => (int) $total_acertos,
+                'total_erros' => (int) $total_erros,
             ]
         );
 
-        return (int)$database->lastInsertId();
-    }
 
-    public static function all($pesquisar = null)
-    {
-        $db = new Database(config('database'));
+        $novoResumo = self::buildScheduleSummary($idDeck, $idUser);
 
-        return $db->query(
-            query: 'select * from deck where idUser = :idUser' . (
-                $pesquisar ? 'and name like :pesquisar' : null
-            ),
-            class: self::class,
-            params: array_merge(['idUser' => auth()->id], $pesquisar ? ['pesquisar' => "%$pesquisar%"] : [])
-        )->fetchAll();
-    }
-
-    public static function find(int $id_deck)
-    {
-        $db = new Database(config('database'));
-
-        $stmt = $db->query(
-            'SELECT * FROM deck WHERE id_deck = :id_deck AND idUser = :idUser',
-            Deck::class,
-            [
-                'id_deck' => $id_deck,
-                'idUser' => auth()->id
-            ]
-        );
-
-        return $stmt->fetch(); // já retorna um objeto `Revisao`
+        return [
+            'registrado' => true,
+            'id' => (int) $database->lastInsertId(),
+            'proxima_revisao' => $novoResumo['proxima_revisao'],
+            'etapa_revisao' => $novoResumo['etapa_revisao'],
+            'message' => 'Revisão registrada com sucesso.',
+        ];
     }
 
 
-
-    public static function update($id, $title, $description, $idDiscipline)
+    public static function buildScheduleSummary(int $idDeck, ?int $idUser = null): array
     {
         $db = new Database(config('database'));
+        $idUser = $idUser ?? (int) auth()->id;
 
-        $set = 'title = :title, description = :description,  idDiscipline = :idDiscipline ';
 
-        // if ($discipline) {
-        //     $set .= ', nota = :nota';
-        // }
-
-        $db->query(
-            query: "
-                update deck
-                set $set
-                where id = :id
-            ",
-            params: array_merge(
-                [
-                    'id'     => $id,
-                    'title' => $title,
-                    'description' => $description,
-                    'idDiscipline' => $idDiscipline,
-
-                ]
-            )
-        );
-
-        return $id;
-    }
-
-    public static function verificaExisteVinculo($id)
-    {
-        $db = new Database(config('database'));
-        $stmt = $db->query(
-            query: "SELECT COUNT(*) as total FROM task WHERE idDiscipline = :id",
-            params: ['id' => $id]
-        );
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return (int) ($row['total'] ?? 0);
-    }
-
-    public static function delete($id)
-    {
-        $db = new Database(config('database'));
-
-        try {
-            // Inicia uma transação — garante que tudo ocorra junto
-            $db->beginTransaction();
-
-            // 1️⃣ Deleta todos os cards vinculados a esse deck
-            $db->query(
-                query: '
-                DELETE FROM card
+        $datas = $db->query(
+            query: '
+                SELECT DISTINCT data_revisao
+                FROM deck_revisao
                 WHERE id_deck = :id_deck
+                  AND id_user = :id_user
+                ORDER BY data_revisao ASC
             ',
-                params: [
-                    'id_deck' => $id,
-                ]
-            );
+            params: [
+                'id_deck' => $idDeck,
+                'id_user' => $idUser,
+            ]
 
-            // 2️⃣ Agora deleta o deck
-            $stmt = $db->query(
-                query: '
-                DELETE FROM deck
-                WHERE id = :id
-            ',
-                params: [
-                    'id' => $id,
-                ]
-            );
+        )->fetchAll();
 
-            // Finaliza a transação
-            $db->commit();
-
-            // Retorna se o deck foi deletado com sucesso
-            return $stmt->rowCount() > 0;
-        } catch (Exception $e) {
-            // Caso algo dê errado, desfaz a transação
-            $db->rollBack();
-            throw $e;
+        if (! $datas) {
+            return [
+                'ultima_revisao' => null,
+                'proxima_revisao' => date('d/m/Y'),
+                'etapa_revisao' => '1ª revisão (1 dia)',
+                'total_revisoes_validas' => 0,
+                'pode_registrar_hoje' => true,
+            ];
         }
+
+
+        $totalValidas = 0;
+        $ultimaValida = null;
+        $proximaData = null;
+
+        foreach ($datas as $linha) {
+            $dataAtual = (string) ($linha['data_revisao'] ?? '');
+
+            if ($dataAtual === '') {
+                continue;
+            }
+
+            if ($totalValidas === 0) {
+                $totalValidas = 1;
+                $ultimaValida = $dataAtual;
+                $proximaData = self::addDays($ultimaValida, self::intervaloPorEtapa($totalValidas));
+                continue;
+            }
+
+            if ($proximaData !== null && $dataAtual >= $proximaData) {
+                $totalValidas++;
+                $ultimaValida = $dataAtual;
+                $proximaData = self::addDays($ultimaValida, self::intervaloPorEtapa($totalValidas));
+            }
+        }
+
+
+        $hoje = date('Y-m-d');
+        $podeRegistrarHoje = $proximaData === null || $hoje >= $proximaData;
+
+
+        return [
+            'ultima_revisao' => $ultimaValida,
+            'proxima_revisao' => self::formatDate($proximaData),
+            'etapa_revisao' => self::descricaoEtapa($totalValidas),
+            'total_revisoes_validas' => $totalValidas,
+            'pode_registrar_hoje' => $podeRegistrarHoje,
+        ];
+    }
+
+    private static function intervaloPorEtapa(int $totalValidas): int
+    {
+
+        return match (true) {
+            $totalValidas <= 1 => 1,
+            $totalValidas === 2 => 3,
+            $totalValidas === 3 => 7,
+            $totalValidas === 4 => 30,
+            default => 90,
+        };
+    }
+
+
+    private static function descricaoEtapa(int $totalValidas): string
+    {
+        return match (true) {
+            $totalValidas <= 0 => '1ª revisão (1 dia)',
+            $totalValidas === 1 => '2ª revisão (1 dia)',
+            $totalValidas === 2 => '3ª revisão (3 dias)',
+            $totalValidas === 3 => '4ª revisão (7 dias)',
+            $totalValidas === 4 => '5ª revisão (30 dias)',
+            default => 'Revisões contínuas (90 dias)',
+        };
+    }
+
+    private static function addDays(string $date, int $days): string
+    {
+
+        $base = new \DateTime($date);
+        $base->modify("+{$days} days");
+
+
+        return $base->format('Y-m-d');
+    }
+
+
+    private static function formatDate(?string $date): string
+    {
+        if (! $date) {
+            return date('d/m/Y');
+        }
+
+        return (new \DateTime($date))->format('d/m/Y');
     }
 }

@@ -3,9 +3,9 @@
 
         <?php require base_path('views/partials/_menuOptions.view.php') ?>
 
-        <main id="conteudo" class="w-[80%] flex-1 p-8 overflow-y-auto">
+        <main id="conteudo" class="w-full lg:w-[80%] flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
-            <div class="max-w-xl mx-auto text-white">
+            <div class="max-w-xl mx-auto text-white px-1">
 
                 <!-- TÍTULO -->
                 <h1 class="text-3xl font-bold mb-6 text-center">
@@ -91,6 +91,8 @@
                 </div>
 
             </div>
+
+            <div id="reviewStatusMessage" class="hidden mt-4 rounded-lg border px-4 py-3 text-sm"></div>
 
             <!-- FEEDBACK FINAL -->
             <div id="finalFeedback" class="hidden mt-10 bg-gray-800 rounded-xl p-6 shadow-xl">
@@ -223,6 +225,25 @@
                     total_acertos: totalAcertos,
                     total_erros: totalErros,
                     tempo_gasto: tempoTotal
+
+                }).done(function(res) {
+                    const box = $("#reviewStatusMessage");
+                    box.removeClass("hidden border-green-500/40 bg-green-500/10 text-green-100 border-yellow-500/40 bg-yellow-500/10 text-yellow-100 border-red-500/40 bg-red-500/10 text-red-100");
+
+                    if (res && res.success) {
+                        box.addClass("border-green-500/40 bg-green-500/10 text-green-100");
+                        box.html(`✅ ${res.data?.message ?? 'Revisão registrada com sucesso.'} <br><strong>Próxima revisão:</strong> ${res.data?.proxima_revisao ?? '-'}`);
+                    } else if (res && res.data) {
+                        box.addClass("border-yellow-500/40 bg-yellow-500/10 text-yellow-100");
+                        box.html(`ℹ️ ${res.data.message ?? 'Sua revisão de hoje já foi contabilizada.'} <br><strong>Próxima revisão:</strong> ${res.data.proxima_revisao ?? '-'} | <strong>Etapa:</strong> ${res.data.etapa_revisao ?? '-'}`);
+                    } else {
+                        box.addClass("border-red-500/40 bg-red-500/10 text-red-100");
+                        box.text("❌ Não foi possível atualizar o agendamento da revisão agora.");
+                    }
+                }).fail(function() {
+                    const box = $("#reviewStatusMessage");
+                    box.removeClass("hidden").addClass("border-red-500/40 bg-red-500/10 text-red-100");
+                    box.text("❌ Falha de comunicação ao salvar sua revisão. Tente novamente.");
                 });
 
                 return;

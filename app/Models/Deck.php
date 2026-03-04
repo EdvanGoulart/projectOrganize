@@ -18,6 +18,11 @@ class Deck
 
     public int $idUser;
 
+    public ?string $ultima_revisao = null;
+    public int $total_revisoes = 0;
+    public ?string $proxima_revisao = null;
+    public string $etapa_revisao = 'Sem revisão';
+
 
     public static function create($titulo, $descricao, $disciplina)
     {
@@ -42,13 +47,43 @@ class Deck
     {
         $db = new Database(config('database'));
 
-        return $db->query(
-            query: 'select * from deck where idUser = :idUser' . (
-                $pesquisar ? 'and name like :pesquisar' : null
-            ),
+        $query = '
+            SELECT
+                d.*,
+                MAX(dr.data_revisao) AS ultima_revisao,
+                COUNT(dr.id) AS total_revisoes
+            FROM deck d
+            LEFT JOIN deck_revisao dr
+                ON dr.id_deck = d.id
+                AND dr.id_user = d.idUser
+            WHERE d.idUser = :idUser
+        ';
+
+        $params = ['idUser' => auth()->id];
+
+        if ($pesquisar) {
+            $query .= ' AND d.title LIKE :pesquisar ';
+            $params['pesquisar'] = "%$pesquisar%";
+        }
+
+        $query .= ' GROUP BY d.id ORDER BY d.id DESC ';
+
+        $decks = $db->query(
+            query: $query,
             class: self::class,
-            params: array_merge(['idUser' => auth()->id], $pesquisar ? ['pesquisar' => "%$pesquisar%"] : [])
+
+            params: $params
         )->fetchAll();
+
+        foreach ($decks as $deck) {
+            $deck->total_revisoes = (int) ($deck->total_revisoes ?? 0);
+            [$deck->proxima_revisao, $deck->etapa_revisao] = self::calcularProximaRevisao(
+                $deck->ultima_revisao,
+                $deck->total_revisoes
+            );
+        }
+
+        return $decks;
     }
 
     public static function find(int $id)
@@ -151,5 +186,29 @@ class Deck
             $db->rollBack();
             throw $e;
         }
+    }
+
+    private static function calcularProximaRevisao(?string $ultimaRevisao, int $totalRevisoes): array
+    {
+        if (! $ultimaRevisao || $totalRevisoes <= 0) {
+            return [date('d/m/Y'), '1ª revisão (1 dia)'];
+        }
+
+        $intervalos = [1, 3, 7, 30, 90];
+        $indice = min($totalRevisoes - 1, count($intervalos) - 1);
+        $dias = $intervalos[$indice];
+
+        $proxima = DateTime::createFromFormat('Y-m-d', $ultimaRevisao) ?: new DateTime($ultimaRevisao);
+        $proxima->modify("+{$dias} days");
+
+        $etapas = [
+            '1ª revisão (1 dia)',
+            '2ª revisão (3 dias)',
+            '3ª revisão (7 dias)',
+            '4ª revisão (30 dias)',
+            '5ª+ revisão (90 dias)',
+        ];
+
+        return [$proxima->format('d/m/Y'), $etapas[$indice]];
     }
 }
