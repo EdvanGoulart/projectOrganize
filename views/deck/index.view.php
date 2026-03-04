@@ -10,42 +10,23 @@
                     <h1 class="text-2xl sm:text-3xl font-bold mb-2">🧠 Meus Decks</h1>
                     <p class="text-sm text-gray-300 mb-6">Acompanhe sua etapa de revisão e estude no momento certo.</p>
 
-                    <div id="lista" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
-                        <?php foreach ($deckList as $d): ?>
-                            <div class="deckItem rounded-2xl border border-slate-700/70 bg-slate-800/80 shadow-lg hover:shadow-xl hover:border-slate-500 transition">
-                                <div class="card-body p-4 sm:p-5">
-                                    <div class="flex items-start gap-3">
-                                        <h2 class="card-title flex-1 text-lg sm:text-xl text-white"><?= $d->title ?></h2>
-                                        <button class="btn-delete p-2 rounded-md  cursor-pointer" data-id="<?= $d->id; ?>">
-                                            <i class=" fa-solid fa-trash text-red-600"></i>
-                                        </button>
-                                    </div>
+                    <form id="filtroEtapaForm" method="GET" class="mb-5 flex flex-col sm:flex-row sm:items-end gap-3">
+                        <div class="w-full sm:w-80">
+                            <label for="filtro_etapa" class="block text-xs uppercase tracking-wide text-slate-300 mb-1">Filtrar por etapa de revisão</label>
+                            <select id="filtro_etapa" name="filtro_etapa" class="select select-bordered w-full bg-slate-800 border-slate-600 text-white">
+                                <option value="" <?= empty($filtroEtapaSelecionado) ? 'selected' : '' ?>>Todas as etapas</option>
+                                <option value="hoje" <?= ($filtroEtapaSelecionado ?? '') === 'hoje' ? 'selected' : '' ?>>Revisão hoje / atrasados</option>
+                                <option value="amanha" <?= ($filtroEtapaSelecionado ?? '') === 'amanha' ? 'selected' : '' ?>>Revisão amanhã</option>
+                                <option value="3dias" <?= ($filtroEtapaSelecionado ?? '') === '3dias' ? 'selected' : '' ?>>Próximos 3 dias</option>
+                                <option value="7dias" <?= ($filtroEtapaSelecionado ?? '') === '7dias' ? 'selected' : '' ?>>Próximos 7 dias</option>
+                                <option value="30dias" <?= ($filtroEtapaSelecionado ?? '') === '30dias' ? 'selected' : '' ?>>Próximos 30 dias</option>
+                                <option value="90dias" <?= ($filtroEtapaSelecionado ?? '') === '90dias' ? 'selected' : '' ?>>Ciclo contínuo (90+ dias)</option>
+                            </select>
+                        </div>
+                    </form>
 
-                                    <p class="text-sm text-slate-200 min-h-[44px]"><?= htmlspecialchars($d->description) ?></p>
-
-                                    <div class="flex-1 text-xs text-slate-200 bg-slate-900/40 rounded-lg p-3">
-                                        <hr class="mt-2 mb-1">
-                                        <strong>Última Revisão:</strong> <?= $d->ultima_revisao ? date('d/m/Y', strtotime($d->ultima_revisao)) : 'Sem revisão' ?>
-                                        / <strong>Próxima:</strong> <?= $d->proxima_revisao ?>
-                                        <div class="mt-1 opacity-80">
-                                            <strong>Etapa:</strong> <?= $d->etapa_revisao ?>
-                                        </div>
-                                        <?php if (!empty($d->aviso_revisao)): ?>
-                                            <div class="mt-2 rounded-md border border-amber-500/40 bg-amber-900/30 p-2 text-amber-200">
-                                                ⚠️ <?= htmlspecialchars($d->aviso_revisao) ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="card-actions flex-wrap justify-end gap-2 mt-3">
-                                        <a class="btn btn-sm btn-outline btn-edit-deck" data-id="<?= $d->id; ?>">Cards</a>
-                                        <a href="/deck/practice?id=<?= $d->id ?>" class="btn btn-sm btn-success">Estudar</a>
-                                        <?php if (isset($pendMap[$d->id])): ?>
-                                            <span class="badge badge-secondary ml-2"><?= $pendMap[$d->id] ?> revisões hoje</span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+                    <div id="deckGrid">
+                        <?php require base_path('views/deck/_deckGrid.view.php') ?>
                     </div>
                 </div>
 
@@ -61,6 +42,38 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function carregarDecksPorEtapa(filtroEtapa = '') {
+        $.ajax({
+            url: '/deck-list',
+            type: 'GET',
+            data: {
+                filtro_etapa: filtroEtapa
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (!res.success) {
+                    Swal.fire('Erro', 'Não foi possível aplicar o filtro agora.', 'error');
+                    return;
+                }
+
+                $('#deckGrid').html(res.html);
+            },
+            error: function() {
+                Swal.fire('Erro', 'Falha ao atualizar os decks por etapa.', 'error');
+            }
+        });
+    }
+
+    $('#filtro_etapa').on('change', function() {
+        const filtro = $(this).val();
+        carregarDecksPorEtapa(filtro);
+    });
+
+    $('#limparFiltroEtapa').on('click', function() {
+        $('#filtro_etapa').val('');
+        carregarDecksPorEtapa('');
+    });
+
     $('#formDeck').on('submit', function(e) {
         e.preventDefault();
         const data = $(this).serialize();

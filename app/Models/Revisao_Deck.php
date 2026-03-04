@@ -91,7 +91,7 @@ class Revisao_Deck
             return [
                 'ultima_revisao' => null,
                 'proxima_revisao' => date('d/m/Y'),
-                'etapa_revisao' => '1ª revisão (1 dia)',
+                'etapa_revisao' => '1ª revisão (Hoje)',
                 'total_revisoes_validas' => 0,
                 'pode_registrar_hoje' => true,
                 'atrasada_reset' => false,
@@ -139,7 +139,7 @@ class Revisao_Deck
             return [
                 'ultima_revisao' => null,
                 'proxima_revisao' => date('d/m/Y'),
-                'etapa_revisao' => '1ª revisão (1 dia)',
+                'etapa_revisao' => '1ª revisão (Hoje)',
                 'total_revisoes_validas' => 0,
                 'pode_registrar_hoje' => true,
                 'atrasada_reset' => true,
@@ -182,7 +182,7 @@ class Revisao_Deck
     private static function descricaoEtapa(int $totalValidas): string
     {
         return match (true) {
-            $totalValidas <= 0 => '1ª revisão (1 dia)',
+            $totalValidas <= 0 => '1ª revisão (hoje)',
             $totalValidas === 1 => '2ª revisão (1 dia)',
             $totalValidas === 2 => '3ª revisão (3 dias)',
             $totalValidas === 3 => '4ª revisão (7 dias)',

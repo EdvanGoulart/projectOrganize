@@ -11,12 +11,25 @@ class IndexController
 {
     public function index()
     {
+        $filtroEtapa = request()->get('filtro_etapa');
+        $filtroEtapaSelecionado = is_string($filtroEtapa) ? $filtroEtapa : '';
+
         $deckList = Deck::all(
-            request()->get('pesquisar')
+            request()->get('pesquisar'),
+            $filtroEtapaSelecionado ?: null
         );
 
+        if (request()->isAjax()) {
+            echo json_encode([
+                'success' => true,
+                'html' => $this->renderDeckGrid($deckList),
+            ]);
+            return;
+        }
+
         return view('deck/index', [
-            'deckList'           => $deckList
+            'deckList' => $deckList,
+            'filtroEtapaSelecionado' => $filtroEtapaSelecionado,
         ]);
     }
 
@@ -29,5 +42,13 @@ class IndexController
         return view('deck/create', [
             'disciplineList' => $disciplineList
         ]);
+    }
+
+    private function renderDeckGrid(array $deckList): string
+    {
+        ob_start();
+        require base_path('views/deck/_deckGrid.view.php');
+
+        return (string) ob_get_clean();
     }
 }

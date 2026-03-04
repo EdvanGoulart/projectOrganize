@@ -9,6 +9,7 @@ use DateTime;
 use Exception;
 use PDO;
 use App\Models\Revisao_Deck;
+use DateTimeImmutable;
 
 class Deck
 {
@@ -22,6 +23,7 @@ class Deck
     public ?string $ultima_revisao = null;
     public int $total_revisoes = 0;
     public ?string $proxima_revisao = null;
+    public int $dias_para_revisao = 0;
     public string $etapa_revisao = 'Sem revisão';
     public ?string $aviso_revisao = null;
 
@@ -45,7 +47,7 @@ class Deck
         return (int)$database->lastInsertId();
     }
 
-    public static function all($pesquisar = null)
+    public static function all($pesquisar = null, ?string $filtroEtapa = null)
     {
         $db = new Database(config('database'));
 
@@ -82,12 +84,48 @@ class Deck
 
             $deck->ultima_revisao = $resumo['ultima_revisao'];
             $deck->proxima_revisao = $resumo['proxima_revisao'];
+            $deck->dias_para_revisao = self::calcularDiasParaRevisao($resumo['proxima_revisao']);
             $deck->etapa_revisao = $resumo['etapa_revisao'];
             $deck->total_revisoes = (int) ($resumo['total_revisoes_validas'] ?? 0);
             $deck->aviso_revisao = $resumo['aviso_revisao'];
         }
+        if ($filtroEtapa) {
+            $decks = array_values(array_filter(
+                $decks,
+                fn($deck) => self::deckPassaNoFiltroEtapa($deck, $filtroEtapa)
+            ));
+        }
 
         return $decks;
+    }
+
+    private static function calcularDiasParaRevisao(string $proximaRevisao): int
+    {
+        $proximaData = DateTimeImmutable::createFromFormat('d/m/Y', $proximaRevisao);
+
+        if (! $proximaData) {
+            return 0;
+        }
+
+        $hoje = new DateTimeImmutable('today');
+        $diferenca = $hoje->diff($proximaData);
+
+        return (int) $diferenca->format('%r%a');
+    }
+
+    private static function deckPassaNoFiltroEtapa(self $deck, string $filtroEtapa): bool
+    {
+        $diasParaRevisao = $deck->dias_para_revisao;
+
+        return match ($filtroEtapa) {
+            'hoje' => $diasParaRevisao <= 0,
+            'amanha' => $diasParaRevisao === 1,
+            '3dias' => $diasParaRevisao === 3,
+            '7dias' => $diasParaRevisao === 7,
+            '30dias' => $diasParaRevisao === 30,
+            '90dias' => $diasParaRevisao >= 90,
+            default => true,
+        };
     }
 
     public static function find(int $id)
