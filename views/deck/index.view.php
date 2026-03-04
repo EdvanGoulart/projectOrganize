@@ -30,6 +30,11 @@
                                         <div class="mt-1 opacity-80">
                                             <strong>Etapa:</strong> <?= $d->etapa_revisao ?>
                                         </div>
+                                        <?php if (!empty($d->aviso_revisao)): ?>
+                                            <div class="mt-2 rounded-md border border-amber-500/40 bg-amber-900/30 p-2 text-amber-200">
+                                                ⚠️ <?= htmlspecialchars($d->aviso_revisao) ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="card-actions flex-wrap justify-end gap-2 mt-3">
                                         <a class="btn btn-sm btn-outline btn-edit-deck" data-id="<?= $d->id; ?>">Cards</a>

@@ -94,6 +94,8 @@ class Revisao_Deck
                 'etapa_revisao' => '1ª revisão (1 dia)',
                 'total_revisoes_validas' => 0,
                 'pode_registrar_hoje' => true,
+                'atrasada_reset' => false,
+                'aviso_revisao' => null,
             ];
         }
 
@@ -116,6 +118,13 @@ class Revisao_Deck
                 continue;
             }
 
+            if ($proximaData !== null && $dataAtual > $proximaData && self::deveResetarPorAtraso($totalValidas)) {
+                $totalValidas = 1;
+                $ultimaValida = $dataAtual;
+                $proximaData = self::addDays($ultimaValida, self::intervaloPorEtapa($totalValidas));
+                continue;
+            }
+
             if ($proximaData !== null && $dataAtual >= $proximaData) {
                 $totalValidas++;
                 $ultimaValida = $dataAtual;
@@ -125,6 +134,19 @@ class Revisao_Deck
 
 
         $hoje = date('Y-m-d');
+
+        if ($proximaData !== null && $hoje > $proximaData && self::deveResetarPorAtraso($totalValidas)) {
+            return [
+                'ultima_revisao' => null,
+                'proxima_revisao' => date('d/m/Y'),
+                'etapa_revisao' => '1ª revisão (1 dia)',
+                'total_revisoes_validas' => 0,
+                'pode_registrar_hoje' => true,
+                'atrasada_reset' => true,
+                'aviso_revisao' => 'Revisão atrasada: progresso reiniciado para a 1ª etapa por estar abaixo da 5ª revisão.',
+            ];
+        }
+
         $podeRegistrarHoje = $proximaData === null || $hoje >= $proximaData;
 
 
@@ -134,7 +156,14 @@ class Revisao_Deck
             'etapa_revisao' => self::descricaoEtapa($totalValidas),
             'total_revisoes_validas' => $totalValidas,
             'pode_registrar_hoje' => $podeRegistrarHoje,
+            'atrasada_reset' => false,
+            'aviso_revisao' => null,
         ];
+    }
+
+    private static function deveResetarPorAtraso(int $totalValidas): bool
+    {
+        return $totalValidas < 4;
     }
 
     private static function intervaloPorEtapa(int $totalValidas): int

@@ -8,6 +8,7 @@ use Core\Database;
 use DateTime;
 use Exception;
 use PDO;
+use App\Models\Revisao_Deck;
 
 class Deck
 {
@@ -22,6 +23,7 @@ class Deck
     public int $total_revisoes = 0;
     public ?string $proxima_revisao = null;
     public string $etapa_revisao = 'Sem revisão';
+    public ?string $aviso_revisao = null;
 
 
     public static function create($titulo, $descricao, $disciplina)
@@ -76,11 +78,13 @@ class Deck
         )->fetchAll();
 
         foreach ($decks as $deck) {
-            $deck->total_revisoes = (int) ($deck->total_revisoes ?? 0);
-            [$deck->proxima_revisao, $deck->etapa_revisao] = self::calcularProximaRevisao(
-                $deck->ultima_revisao,
-                $deck->total_revisoes
-            );
+            $resumo = Revisao_Deck::buildScheduleSummary((int) $deck->id, (int) auth()->id);
+
+            $deck->ultima_revisao = $resumo['ultima_revisao'];
+            $deck->proxima_revisao = $resumo['proxima_revisao'];
+            $deck->etapa_revisao = $resumo['etapa_revisao'];
+            $deck->total_revisoes = (int) ($resumo['total_revisoes_validas'] ?? 0);
+            $deck->aviso_revisao = $resumo['aviso_revisao'];
         }
 
         return $decks;
