@@ -89,6 +89,7 @@ class Deck
             $deck->total_revisoes = (int) ($resumo['total_revisoes_validas'] ?? 0);
             $deck->aviso_revisao = $resumo['aviso_revisao'];
         }
+
         if ($filtroEtapa) {
             $decks = array_values(array_filter(
                 $decks,
@@ -120,9 +121,9 @@ class Deck
         return match ($filtroEtapa) {
             'hoje' => $diasParaRevisao <= 0,
             'amanha' => $diasParaRevisao === 1,
-            '3dias' => $diasParaRevisao === 3,
-            '7dias' => $diasParaRevisao === 7,
-            '30dias' => $diasParaRevisao === 30,
+            '3dias' => $diasParaRevisao >= 2 && $diasParaRevisao <= 3,
+            '7dias' => $diasParaRevisao >= 4 && $diasParaRevisao <= 7,
+            '30dias' => $diasParaRevisao >= 8 && $diasParaRevisao <= 30,
             '90dias' => $diasParaRevisao >= 90,
             default => true,
         };

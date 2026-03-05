@@ -62,7 +62,7 @@
         <!-- Filtro (lado esquerdo) -->
         <div class="w-1/4 flex flex-col">
             <label for="filtroDisciplina" class="text-white font-semibold mb-2">Filtrar por disciplina:</label>
-            <select id="filtroDisciplina" class="p-2 rounded-md bg-white text-black">
+            <select id="filtroDisciplina" class="p-2 rounded-md bg-white text-black" required>
                 <option value="">Selecione</option>
                 <?php foreach ($disciplineList as $discipline) : ?>
                     <option value="<?= $discipline->id ?>"><?= $discipline->name ?></option>
@@ -192,6 +192,8 @@
 </div>
 
 <script>
+    const totalDisciplinas = <?= count($disciplineList) ?>;
+
     $('#form-task').submit(function(e) {
         e.preventDefault();
         const formData = $(this).serialize();
@@ -378,6 +380,18 @@
     }
 
     function abrirModalCriarTarefa() {
+
+        if (totalDisciplinas === 0) {
+            Swal.fire({
+                title: 'Atenção!',
+                text: 'Você precisa criar uma disciplina antes de criar uma tarefa.',
+                icon: 'warning',
+                confirmButtonText: 'Ir para Disciplinas'
+            }).then(() => {
+                window.location.href = '/discipline';
+            });
+            return;
+        }
         $('#form-task')[0].reset();
 
         $('#task_id').val('');

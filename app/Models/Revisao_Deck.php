@@ -74,7 +74,7 @@ class Revisao_Deck
 
         $datas = $db->query(
             query: '
-                SELECT DISTINCT data_revisao
+                SELECT DISTINCT DATE(data_revisao) AS data_revisao
                 FROM deck_revisao
                 WHERE id_deck = :id_deck
                   AND id_user = :id_user

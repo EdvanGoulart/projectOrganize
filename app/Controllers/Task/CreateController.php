@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Task;
 
+use App\Models\Discipline;
 use App\Models\Gamification;
 use App\Models\Task;
 use Core\Validacao;
@@ -17,6 +18,13 @@ class CreateController
 
     public function store()
     {
+        $disciplineList = Discipline::all();
+
+        if (count($disciplineList) === 0) {
+            flash()->push('mensagem', 'Você precisa criar uma disciplina antes de criar uma tarefa.');
+            return redirect('/discipline');
+        }
+
         $validacao = Validacao::validar([
             'name' => ['required', 'min:3', 'max:255'],
             'description'   => ['required'],
@@ -45,6 +53,17 @@ class CreateController
 
     public function storeAjax()
     {
+
+        $disciplineList = Discipline::all();
+
+        if (count($disciplineList) === 0) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Você precisa criar uma disciplina antes de criar uma tarefa.'
+            ]);
+            return;
+        }
         $validacao = Validacao::validar([
             'name'        => ['required', 'min:3', 'max:255'],
             'description' => ['required'],
@@ -55,7 +74,8 @@ class CreateController
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'errors'  => $validacao->erros()  // supondo que esse método exista
+                'message' => 'Preencha todos os campos obrigatórios para criar a tarefa.',
+                'errors'  => $validacao->erros()
             ]);
             return;
         }
@@ -76,6 +96,7 @@ class CreateController
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
+            'message' => 'Tarefa criada com sucesso!',
             'data' => [
                 'id' => $idTask,
                 'name'     => request()->post('name'),
