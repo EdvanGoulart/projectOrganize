@@ -73,7 +73,7 @@ class Task
         return $task ?: null;
     }
 
-    public static function create($data)
+    public static function create($data): int
     {
         $database = new Database(config('database'));
 
@@ -94,6 +94,8 @@ class Task
                 'startDate'     => (new \DateTime())->format('Y-m-d H:i:s'),
             ])
         );
+
+        return (int) $database->lastInsertId();
     }
 
     public static function update($id, $name, $description, $status, $priority, $idDiscipline, $endDate)

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Revisao;
 
-
+use App\Models\Gamification;
 use App\Models\Revisao_Deck;
 
 class Revisao_DeckController
@@ -19,6 +19,10 @@ class Revisao_DeckController
             request()->post('total_acertos'),
             request()->post('total_erros'),
         );
+
+        if ((bool) ($resultado['registrado'] ?? false)) {
+            Gamification::onDeckReviewCompleted((int) auth()->id, (int) request()->post('id_deck'));
+        }
 
         header('Content-Type: application/json');
         echo json_encode([

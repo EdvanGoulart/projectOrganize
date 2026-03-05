@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Task;
 
+use App\Models\Gamification;
 use App\Models\Task;
 use Core\Validacao;
 
@@ -25,7 +26,7 @@ class CreateController
             return view('/task');
         }
 
-        Task::create([
+        $idTask = Task::create([
             'idUser' => auth()->id,
             'name'     => request()->post('name'),
             'description'       => request()->post('description'),
@@ -34,6 +35,8 @@ class CreateController
             'idDiscipline'       => request()->post('discipline'),
             'endDate'       => request()->post('endDate'),
         ]);
+
+        Gamification::onTaskCreated((int) auth()->id, (int) $idTask);
 
         flash()->push('mensagem', 'Tarefa criada com sucesso!');
 
@@ -68,6 +71,7 @@ class CreateController
             'endDate'       => request()->post('endDate'),
         ]);
 
+        Gamification::onTaskCreated((int) auth()->id, (int) $idTask);
 
         header('Content-Type: application/json');
         echo json_encode([

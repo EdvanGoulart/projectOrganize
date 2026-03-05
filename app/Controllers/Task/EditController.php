@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Task;
 
+use App\Models\Gamification;
 use App\Models\Task;
 use Core\Validacao;
 
@@ -48,6 +49,8 @@ class EditController
             return;
         }
 
+        $taskBefore = Task::find((int) request()->post('id'));
+
         $idTask = Task::update(
             request()->post('id'),
             request()->post('name'),
@@ -57,6 +60,8 @@ class EditController
             request()->post('discipline'),
             request()->post('endDate'),
         );
+
+        $this->awardTaskCompletionXp($taskBefore?->status ?? null, (string) request()->post('status'), (int) request()->post('id'));
 
         header('Content-Type: application/json');
         echo json_encode([
@@ -88,10 +93,15 @@ class EditController
             return;
         }
 
+
+        $taskBefore = Task::find($id);
+
         // Atualiza o status via classe Task
         $updated = Task::updateStatus($id, $status);
 
         if ($updated) {
+            $this->awardTaskCompletionXp($taskBefore?->status ?? null, $status, $id);
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Status atualizado com sucesso!'
@@ -120,9 +130,13 @@ class EditController
             return;
         }
 
+        $taskBefore = Task::find((int) $id);
         $updated = Task::updateOrder((int)$id, $status, (int)$position);
 
         if ($updated) {
+
+            $this->awardTaskCompletionXp($taskBefore?->status ?? null, (string) $status, (int) $id);
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Ordem e status atualizados com sucesso!'
@@ -132,6 +146,13 @@ class EditController
                 'success' => false,
                 'message' => 'Falha ao atualizar ordem ou status.'
             ]);
+        }
+    }
+
+    private function awardTaskCompletionXp(?string $previousStatus, string $newStatus, int $taskId): void
+    {
+        if ($newStatus === 'completed' && $previousStatus !== 'completed') {
+            Gamification::onTaskCompleted((int) auth()->id, $taskId);
         }
     }
 }

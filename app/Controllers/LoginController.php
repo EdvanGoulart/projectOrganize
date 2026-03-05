@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Models\Gamification;
 use App\Models\User;
 use Core\Database;
 use Core\Validacao;
@@ -45,7 +46,9 @@ class LoginController
 
         session()->set('auth', $user);
 
-        flash()->push('mensagem', 'Seja bem-vindo ' . $user->nome . '!');
+        Gamification::onLogin((int) $user->id);
+
+        flash()->push('mensagem', 'Seja bem-vindo ' . $user->name . '!');
 
         return redirect('/task');
     }
