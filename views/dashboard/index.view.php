@@ -57,6 +57,39 @@ $xpValues = json_encode($dashboard['xpHistoryValues'], JSON_UNESCAPED_UNICODE);
 
     <div class="card bg-base-100 shadow mb-8">
         <div class="card-body">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <h2 class="card-title">Quadro de Conquistas</h2>
+                <a href="/conquistas" class="btn btn-primary btn-sm">Abrir quadro completo</a>
+            </div>
+
+            <div class="mb-4">
+                <div class="flex justify-between text-sm text-gray-400 mb-2">
+                    <span>Desbloqueadas: <?= $dashboard['achievementsSummary']['unlocked'] ?>/<?= $dashboard['achievementsSummary']['total'] ?></span>
+                    <span><?= $dashboard['achievementsSummary']['percentage'] ?>%</span>
+                </div>
+                <progress class="progress progress-success w-full" value="<?= $dashboard['achievementsSummary']['unlocked'] ?>" max="<?= $dashboard['achievementsSummary']['total'] ?>"></progress>
+            </div>
+
+            <?php if (!empty($dashboard['latestUnlockedAchievements'])) : ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                    <?php foreach ($dashboard['latestUnlockedAchievements'] as $achievement) : ?>
+                        <article class="rounded-xl border border-base-300 bg-base-200 p-4">
+                            <p class="text-2xl mb-2"><?= $achievement['icon'] ?></p>
+                            <p class="font-semibold leading-tight"><?= htmlspecialchars((string) $achievement['title']) ?></p>
+                            <p class="text-xs text-gray-400 mt-2">
+                                Desbloqueada em <?= date('d/m/Y H:i', strtotime((string) $achievement['unlockedAt'])) ?>
+                            </p>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php else : ?>
+                <p class="text-sm text-gray-400">Você ainda não desbloqueou conquistas. Continue evoluindo para ganhar seus primeiros troféus!</p>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow mb-8">
+        <div class="card-body">
             <h2 class="card-title mb-4">Últimos ganhos de XP</h2>
 
             <ul class="space-y-3">
@@ -75,14 +108,10 @@ $xpValues = json_encode($dashboard['xpHistoryValues'], JSON_UNESCAPED_UNICODE);
                 <?php endif; ?>
             </ul>
 
-            <!-- Pensar em algo para gerar conquistas aqui -->
-            <!-- <div class="card-actions justify-end mt-4">
-                <a href="/conquistas" class="btn btn-sm btn-outline">
-                    Ver todas
-                </a>
-            </div> -->
         </div>
     </div>
+
+
 
 
     <div class="card bg-base-100 shadow mb-8">

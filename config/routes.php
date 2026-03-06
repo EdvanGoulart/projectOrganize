@@ -16,6 +16,7 @@ use App\Controllers\Revisao;
 use App\Controllers\Dashboard;
 use App\Controllers\Profile;
 use App\Controllers\ForgotPasswordController;
+use App\Controllers\Achievement;
 
 use App\Models\Deck as ModelsDeck;
 use App\Models\Task as ModelsTask;
@@ -82,6 +83,7 @@ use Core\Route;
 
 
     ->get('/dashboard', Dashboard\IndexController::class, AuthMiddleware::class)
+    ->get('/conquistas', Achievement\IndexController::class, AuthMiddleware::class)
 
 
     ->run();

@@ -13,6 +13,139 @@ class Gamification
     private const XP_REVIEW_COMPLETED = 40;
     private const XP_LOGIN_STREAK = 10;
 
+    private const ACHIEVEMENTS = [
+        [
+            'code' => 'login_streak_3',
+            'title' => 'Início da Ofensiva',
+            'description' => 'Faça login por 3 dias consecutivos.',
+            'icon' => '🔥',
+            'metric' => 'login_streak',
+            'target' => 3,
+        ],
+        [
+            'code' => 'login_streak_7',
+            'title' => 'Semana Imparável',
+            'description' => 'Faça login por 7 dias consecutivos.',
+            'icon' => '⚡',
+            'metric' => 'login_streak',
+            'target' => 7,
+        ],
+        [
+            'code' => 'tasks_created_50',
+            'title' => 'Mestre do Planejamento',
+            'description' => 'Crie 50 tarefas.',
+            'icon' => '📝',
+            'metric' => 'tasks_created',
+            'target' => 50,
+        ],
+        [
+            'code' => 'tasks_completed_25',
+            'title' => 'Executor Focado',
+            'description' => 'Conclua 25 tarefas.',
+            'icon' => '✅',
+            'metric' => 'tasks_completed',
+            'target' => 25,
+        ],
+        [
+            'code' => 'cards_answered_250',
+            'title' => 'Memória de Aço',
+            'description' => 'Responda 250 cards.',
+            'icon' => '🧠',
+            'metric' => 'cards_answered',
+            'target' => 250,
+        ],
+        [
+            'code' => 'deck_reviews_30',
+            'title' => 'Maratonista de Revisões',
+            'description' => 'Finalize 30 revisões de deck.',
+            'icon' => '🏁',
+            'metric' => 'deck_reviews',
+            'target' => 30,
+        ],
+
+        [
+            'code' => 'login_streak_14',
+            'title' => 'Duas Semanas de Foco',
+            'description' => 'Faça login por 14 dias consecutivos.',
+            'icon' => '📆',
+            'metric' => 'login_streak',
+            'target' => 14,
+        ],
+        [
+            'code' => 'tasks_created_100',
+            'title' => 'Arquiteto do Fluxo',
+            'description' => 'Crie 100 tarefas.',
+            'icon' => '🏗️',
+            'metric' => 'tasks_created',
+            'target' => 100,
+        ],
+        [
+            'code' => 'tasks_created_250',
+            'title' => 'Fábrica de Metas',
+            'description' => 'Crie 250 tarefas.',
+            'icon' => '🏭',
+            'metric' => 'tasks_created',
+            'target' => 250,
+        ],
+        [
+            'code' => 'tasks_completed_50',
+            'title' => 'Produtividade em Alta',
+            'description' => 'Conclua 50 tarefas.',
+            'icon' => '🚀',
+            'metric' => 'tasks_completed',
+            'target' => 50,
+        ],
+        [
+            'code' => 'tasks_completed_100',
+            'title' => 'O Entregador',
+            'description' => 'Conclua 100 tarefas.',
+            'icon' => '🏆',
+            'metric' => 'tasks_completed',
+            'target' => 100,
+        ],
+        [
+            'code' => 'cards_answered_500',
+            'title' => 'Mente Treinada',
+            'description' => 'Responda 500 cards.',
+            'icon' => '🎯',
+            'metric' => 'cards_answered',
+            'target' => 500,
+        ],
+        [
+            'code' => 'cards_answered_1000',
+            'title' => 'Lenda dos Flashcards',
+            'description' => 'Responda 1000 cards.',
+            'icon' => '👑',
+            'metric' => 'cards_answered',
+            'target' => 1000,
+        ],
+        [
+            'code' => 'deck_reviews_60',
+            'title' => 'Ritmo Constante',
+            'description' => 'Finalize 60 revisões de deck.',
+            'icon' => '🔁',
+            'metric' => 'deck_reviews',
+            'target' => 60,
+        ],
+        [
+            'code' => 'deck_reviews_120',
+            'title' => 'Especialista em Revisão',
+            'description' => 'Finalize 120 revisões de deck.',
+            'icon' => '🎓',
+            'metric' => 'deck_reviews',
+            'target' => 120,
+        ],
+        [
+            'code' => 'login_streak_30',
+            'title' => 'Mês de Disciplina',
+            'description' => 'Faça login por 30 dias consecutivos.',
+            'icon' => '💎',
+            'metric' => 'login_streak',
+            'target' => 30,
+        ],
+    ];
+
+
     public static function onLogin(int $userId): void
     {
         self::ensureStatsRow($userId);
@@ -51,26 +184,31 @@ class Gamification
         );
 
         self::addXp($userId, self::XP_LOGIN_STREAK, 'login_streak', 'Login diário consecutivo', null);
+        self::evaluateAchievements($userId);
     }
 
     public static function onTaskCreated(int $userId, int $taskId): void
     {
         self::addXp($userId, self::XP_TASK_CREATED, 'task_created', 'Tarefa criada', $taskId);
+        self::evaluateAchievements($userId);
     }
 
     public static function onTaskCompleted(int $userId, int $taskId): void
     {
         self::addXp($userId, self::XP_TASK_COMPLETED, 'task_completed', 'Tarefa concluída', $taskId);
+        self::evaluateAchievements($userId);
     }
 
     public static function onDeckReviewCompleted(int $userId, int $deckId): void
     {
         self::addXp($userId, self::XP_REVIEW_COMPLETED, 'deck_review_completed', 'Revisão concluída', $deckId);
+        self::evaluateAchievements($userId);
     }
 
     public static function getDashboardData(int $userId): array
     {
         self::ensureStatsRow($userId);
+        self::evaluateAchievements($userId);
 
         $db = new Database(config('database'));
         $stats = self::getStats($userId);
@@ -101,6 +239,9 @@ class Gamification
                     LIMIT 5',
             params: ['user_id' => $userId]
         )->fetchAll();
+
+        $achievementsSummary = self::getAchievementsSummary($userId);
+        $latestUnlockedAchievements = self::getLatestUnlockedAchievements($userId);
 
         $xpHistoryRows = $db->query(
             query: 'SELECT DATE(created_at) AS day, SUM(xp_amount) AS xp
@@ -136,10 +277,57 @@ class Gamification
             'currentLoginStreak' => (int) ($stats['current_login_streak'] ?? 0),
             'longestLoginStreak' => (int) ($stats['longest_login_streak'] ?? 0),
             'recentAchievements' => $recentAchievements,
+            'achievementsSummary' => $achievementsSummary,
+            'latestUnlockedAchievements' => $latestUnlockedAchievements,
             'xpHistoryLabels' => $labels,
             'xpHistoryValues' => $values,
         ];
     }
+
+    public static function getAchievementsBoardData(int $userId): array
+    {
+        self::ensureStatsRow($userId);
+        self::evaluateAchievements($userId);
+
+        $db = new Database(config('database'));
+        $metrics = self::collectMetrics($userId);
+
+        $unlockedRows = $db->query(
+            query: 'SELECT achievement_code, unlocked_at
+                    FROM user_achievements
+                    WHERE user_id = :user_id',
+            params: ['user_id' => $userId]
+        )->fetchAll();
+
+        $unlockedByCode = [];
+        foreach ($unlockedRows as $row) {
+            $unlockedByCode[$row['achievement_code']] = $row['unlocked_at'];
+        }
+
+        $achievements = [];
+        foreach (self::ACHIEVEMENTS as $achievement) {
+            $progressValue = min((int) ($metrics[$achievement['metric']] ?? 0), $achievement['target']);
+            $achievements[] = [
+                'code' => $achievement['code'],
+                'title' => $achievement['title'],
+                'description' => $achievement['description'],
+                'icon' => $achievement['icon'],
+                'target' => $achievement['target'],
+                'progress' => $progressValue,
+                'metricLabel' => self::metricLabel($achievement['metric']),
+                'isUnlocked' => isset($unlockedByCode[$achievement['code']]),
+                'unlockedAt' => $unlockedByCode[$achievement['code']] ?? null,
+            ];
+        }
+
+        return [
+            'total' => count($achievements),
+            'unlocked' => count($unlockedByCode),
+            'achievements' => $achievements,
+        ];
+    }
+
+
 
     private static function addXp(int $userId, int $xpAmount, string $eventType, string $description, ?int $referenceId): void
     {
@@ -218,5 +406,155 @@ class Gamification
             'xpCurrentLevel' => $xpCurrentLevel,
             'xpNextLevel' => $xpPerLevel,
         ];
+    }
+
+    private static function collectMetrics(int $userId): array
+    {
+        $db = new Database(config('database'));
+        $stats = self::getStats($userId);
+
+        $tasksCreated = (int) $db->query(
+            query: 'SELECT COUNT(*) AS total FROM task WHERE idUser = :idUser',
+            params: ['idUser' => $userId]
+        )->fetch()['total'];
+
+        $tasksCompleted = (int) $db->query(
+            query: 'SELECT COUNT(*) AS total FROM task WHERE idUser = :idUser AND status = :status',
+            params: ['idUser' => $userId, 'status' => 'completed']
+        )->fetch()['total'];
+
+        $cardsAnswered = (int) $db->query(
+            query: 'SELECT COUNT(*) AS total FROM deck_revisao_card WHERE id_user = :id_user',
+            params: ['id_user' => $userId]
+        )->fetch()['total'];
+
+        $deckReviews = (int) $db->query(
+            query: 'SELECT COUNT(*) AS total FROM deck_revisao WHERE id_user = :id_user',
+            params: ['id_user' => $userId]
+        )->fetch()['total'];
+
+        return [
+            'tasks_created' => $tasksCreated,
+            'tasks_completed' => $tasksCompleted,
+            'cards_answered' => $cardsAnswered,
+            'deck_reviews' => $deckReviews,
+            'login_streak' => (int) ($stats['longest_login_streak'] ?? 0),
+        ];
+    }
+
+    private static function evaluateAchievements(int $userId): void
+    {
+        $metrics = self::collectMetrics($userId);
+
+        foreach (self::ACHIEVEMENTS as $achievement) {
+            if ((int) ($metrics[$achievement['metric']] ?? 0) < $achievement['target']) {
+                continue;
+            }
+
+            self::unlockAchievement(
+                $userId,
+                $achievement['code'],
+                $achievement['title'],
+                $achievement['description']
+            );
+        }
+    }
+
+    private static function unlockAchievement(int $userId, string $code, string $title, string $description): void
+    {
+        $db = new Database(config('database'));
+
+        $exists = $db->query(
+            query: 'SELECT id FROM user_achievements WHERE user_id = :user_id AND achievement_code = :achievement_code',
+            params: [
+                'user_id' => $userId,
+                'achievement_code' => $code,
+            ]
+        )->fetch();
+
+        if ($exists) {
+            return;
+        }
+
+        $db->query(
+            query: 'INSERT INTO user_achievements (user_id, achievement_code, achievement_title, achievement_description, unlocked_at)
+                    VALUES (:user_id, :achievement_code, :achievement_title, :achievement_description, NOW())',
+            params: [
+                'user_id' => $userId,
+                'achievement_code' => $code,
+                'achievement_title' => $title,
+                'achievement_description' => $description,
+            ]
+        );
+    }
+
+    private static function metricLabel(string $metric): string
+    {
+        return match ($metric) {
+            'tasks_created' => 'tarefas criadas',
+            'tasks_completed' => 'tarefas concluídas',
+            'cards_answered' => 'cards respondidos',
+            'deck_reviews' => 'revisões',
+            'login_streak' => 'dias consecutivos',
+            default => 'progresso',
+        };
+    }
+
+    private static function getAchievementsSummary(int $userId): array
+    {
+        $db = new Database(config('database'));
+
+        $unlocked = (int) $db->query(
+            query: 'SELECT COUNT(*) AS total FROM user_achievements WHERE user_id = :user_id',
+            params: ['user_id' => $userId]
+        )->fetch()['total'];
+
+        $total = count(self::ACHIEVEMENTS);
+        $percentage = $total > 0 ? (int) round(($unlocked / $total) * 100) : 0;
+
+        return [
+            'unlocked' => $unlocked,
+            'total' => $total,
+            'percentage' => $percentage,
+        ];
+    }
+
+    private static function getLatestUnlockedAchievements(int $userId, int $limit = 4): array
+    {
+        $db = new Database(config('database'));
+        $safeLimit = max(1, $limit);
+
+        $rows = $db->query(
+            query: 'SELECT achievement_code, achievement_title, unlocked_at
+                    FROM user_achievements
+                    WHERE user_id = :user_id
+                    ORDER BY unlocked_at DESC
+                    LIMIT ' . $safeLimit,
+            params: [
+                'user_id' => $userId,
+            ]
+        )->fetchAll();
+
+        $achievementsByCode = self::achievementsByCode();
+
+        return array_map(static function (array $row) use ($achievementsByCode): array {
+            $code = (string) $row['achievement_code'];
+            return [
+                'code' => $code,
+                'title' => (string) $row['achievement_title'],
+                'icon' => $achievementsByCode[$code]['icon'] ?? '🏅',
+                'unlockedAt' => $row['unlocked_at'],
+            ];
+        }, $rows);
+    }
+
+    private static function achievementsByCode(): array
+    {
+        $indexed = [];
+        foreach (self::ACHIEVEMENTS as $achievement) {
+            $indexed[$achievement['code']] = $achievement;
+        }
+
+        return $indexed;
     }
 }

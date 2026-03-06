@@ -1,54 +1,54 @@
-<main class="bg-gray-300 w-full">
+<main class="w-full bg-base-200 rounded-xl">
 
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-5 flex justify-between items-start gap-4 rounded-xl bg-[#eae9ea] border border-gray-200 shadow-2xs p-4">
+    <div class="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
         <!-- Coluna base -->
-        <div class="flex flex-col flex-1 h-[80vh] bg-[#101204] border border-gray-900 shadow-2xs rounded-xl">
+        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
-                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">Pendente</h3>
+                <h3 class="text-lg font-bold text-base-content mb-5">Pendente</h3>
                 <div id="pendingList" class="task-column flex-1 overflow-auto pr-1 custom-scroll">
                     <!-- Cards -->
                 </div>
             </div>
             <div class="text-center p-2">
-                <label class="btn btn-outline w-1/2 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
+                <label class="btn btn-outline btn-primary w-full sm:w-2/3 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
                     Nova Tarefa
                 </label>
             </div>
         </div>
 
         <!-- Copie as próximas colunas com a mesma estrutura -->
-        <div class="flex flex-col flex-1 h-[80vh] bg-[#101204] border border-gray-900 shadow-2xs rounded-xl">
+        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
-                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">Andamento</h3>
+                <h3 class="text-lg font-bold text-base-content mb-5">Andamento</h3>
                 <div id="progressList" class="task-column flex-1 overflow-auto pr-1 custom-scroll"></div>
             </div>
             <div class="text-center p-2">
-                <label class="btn btn-outline w-1/2 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
+                <label class="btn btn-outline btn-primary w-full sm:w-2/3 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
                     Nova Tarefa
                 </label>
             </div>
         </div>
 
-        <div class="flex flex-col flex-1 h-[80vh] bg-[#101204] border border-gray-900 shadow-2xs rounded-xl">
+        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
-                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">Revisão</h3>
+                <h3 class="text-lg font-bold text-base-content mb-5">Revisão</h3>
                 <div id="reviewList" class="task-column flex-1 overflow-auto pr-1 custom-scroll"></div>
             </div>
             <div class="text-center p-2">
-                <label class="btn btn-outline w-1/2 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
+                <label class="btn btn-outline btn-primary w-full sm:w-2/3 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
                     Nova Tarefa
                 </label>
             </div>
         </div>
 
-        <div class="flex flex-col flex-1 h-[80vh] bg-[#101204] border border-gray-900 shadow-2xs rounded-xl">
+        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
-                <h3 class="text-lg font-bold text-[#eae9ea] mb-5">Concluído</h3>
+                <h3 class="text-lg font-bold text-base-content mb-5">Concluído</h3>
                 <div id="completedList" class="task-column flex-1 overflow-auto pr-1 custom-scroll"></div>
             </div>
             <div class="text-center p-2">
-                <label class="btn btn-outline w-1/2 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
+                <label class="btn btn-outline btn-primary w-full sm:w-2/3 mb-2 cursor-pointer" onclick="abrirModalCriarTarefa()">
                     Nova Tarefa
                 </label>
             </div>
@@ -58,30 +58,34 @@
 
 
 
-    <div class="p-6 bg-[#1e1f23] shadow-lg flex items-start gap-6">
-        <!-- Filtro (lado esquerdo) -->
-        <div class="w-1/4 flex flex-col">
-            <label for="filtroDisciplina" class="text-white font-semibold mb-2">Filtrar por disciplina:</label>
-            <select id="filtroDisciplina" class="p-2 rounded-md bg-white text-black" required>
-                <option value="">Selecione</option>
-                <?php foreach ($disciplineList as $discipline) : ?>
-                    <option value="<?= $discipline->id ?>"><?= $discipline->name ?></option>
-                <?php endforeach ?>
-            </select>
-        </div>
+    <div class="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
+        <div class="card bg-base-100 shadow border border-base-300">
+            <div class="card-body flex flex-col xl:flex-row items-stretch gap-6">
+                <!-- Filtro (lado esquerdo) -->
+                <div class="w-full xl:w-1/4 flex flex-col">
+                    <label for="filtroDisciplina" class="text-base-content font-semibold mb-2">Filtrar por disciplina:</label>
+                    <select id="filtroDisciplina" class="select select-bordered w-full" required>
+                        <option value="">Selecione</option>
+                        <?php foreach ($disciplineList as $discipline) : ?>
+                            <option value="<?= $discipline->id ?>"><?= $discipline->name ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
 
-        <!-- Gráficos (lado direito) -->
-        <div class="w-3/4 flex gap-4">
-            <!-- Gráfico de Status -->
-            <div class="flex-1 flex flex-col items-center">
-                <h2 class="text-white font-bold mb-2">Tarefas por Status</h2>
-                <canvas id="chartStatus" class="w-full h-[150px]"></canvas>
-            </div>
+                <!-- Gráficos (lado direito) -->
+                <div class="w-full xl:w-3/4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Gráfico de Status -->
+                    <div class="flex-1 flex flex-col items-center card bg-base-200 border border-base-300 p-4">
+                        <h2 class="text-base-content font-bold mb-2">Tarefas por Status</h2>
+                        <canvas id="chartStatus" class="w-full h-[150px]"></canvas>
+                    </div>
 
-            <!-- Gráfico de Prioridade -->
-            <div class="flex-1 flex flex-col items-center">
-                <h2 class="text-white font-bold mb-2">Tarefas por Prioridade</h2>
-                <canvas id="chartPrioridade" class="w-full h-[150px]"></canvas>
+                    <!-- Gráfico de Prioridade -->
+                    <div class="flex-1 flex flex-col items-center card bg-base-200 border border-base-300 p-4">
+                        <h2 class="text-base-content font-bold mb-2">Tarefas por Prioridade</h2>
+                        <canvas id="chartPrioridade" class="w-full h-[150px]"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -97,7 +101,7 @@
 
 <!-- Modal -->
 <div class="modal">
-    <div class="modal-box max-w-2xl relative">
+    <div class="modal-box w-11/12 max-w-2xl relative">
         <!-- Botão de fechar -->
         <label for="crud-modal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
 
@@ -116,7 +120,7 @@
                 <input type="text" name="name" id="name" class="input input-bordered w-full" required />
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="status" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                         Status
@@ -150,12 +154,12 @@
                 <input type="date" name="endDate" id="endDate" class="input input-bordered w-full" required />
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="discipline" class="block mb-1 text-sm font-medium text-gray-900 dark:text-[#eae9ea]">
                         Disciplina
                     </label>
-                    <select id="discipline" name="discipline" class="select select-bordered w-full">
+                    <select id="discipline" name="discipline" class="select select-bordered w-full" required>
                         <option value="">Selecione</option>
                         <?php foreach ($disciplineList as $discipline) : ?>
                             <option value="<?= $discipline->id ?>">
@@ -300,13 +304,13 @@
                 function gerarHTMLTask(task) {
                     console.log(task);
                     return `
-                        <div id="task_${task.id}" data-id="${task.id}" class=" task-card group w-[14vw] bg-[#242528] flex p-0 border border-transparent rounded-xl mb-2 relative transition hover:shadow-md">
+                        <div id="task_${task.id}" data-id="${task.id}" class="task-card group w-full bg-base-200 flex p-0 border border-base-300 rounded-xl mb-2 relative transition hover:shadow-md">
                             <!-- Faixa de cor da disciplina -->
-                            <div style="background-color: ${task.disciplineColor}" class="w-[5%] rounded-l-xl"></div>
+                            <div style="background-color: ${task.disciplineColor}" class="w-1.5 rounded-l-xl shrink-0"></div>
                             
 
                             <!-- Conteúdo -->
-                            <div class="w-[95%] p-3">
+                            <div class="w-full p-3">
                                 <div class="flex justify-between items-start h-auto">
                                     <h3 class="font-bold break-words break-all h-auto pb-2">${task.name}</h3>
                                     
@@ -318,16 +322,16 @@
                                         </button>
 
                                         <!-- Menu de opções -->
-                                        <div class="absolute right-0 mt-2 w-32 bg-[#242528] rounded-lg shadow-lg border border-transparent hidden z-50">
+                                        <div class="absolute right-0 mt-2 w-36 bg-base-100 rounded-lg shadow-lg border border-base-300 hidden z-50">
                                             <ul class="text-sm text-gray-700">
                                                 <li>
-                                                    <button type="button" class="w-full text-left text-white px-4 py-2 hover:bg-[#101204] hover:rounded-lg"
+                                                    <button type="button" class="w-full text-left text-base-content px-4 py-2 hover:bg-base-200 hover:rounded-lg"
                                                         onclick="editar(${task.id})">
                                                         <i class="fa-solid fa-pen mr-2"></i> Editar
                                                     </button>
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="w-full text-left text-white px-4 py-2 hover:bg-[#101204] hover:rounded-lg"
+                                                    <button type="button" class="w-full text-left text-base-content px-4 py-2 hover:bg-base-200 hover:rounded-lg"
                                                         onclick="excluir(${task.id})">
                                                         <i class="fa-solid fa-trash mr-2 text-red-600"></i> Excluir
                                                     </button>
@@ -337,7 +341,7 @@
                                     </div>
                                 </div>
 
-                                <p class="mt-2 break-words text-[#bfc1c4]">${task.description}</p>
+                                <p class="mt-2 break-words text-base-content/70">${task.description}</p>
                             </div>
                         </div>
                      `;
