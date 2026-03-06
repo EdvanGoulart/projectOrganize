@@ -153,17 +153,31 @@ class Gamification
         $db = new Database(config('database'));
         $stats = self::getStats($userId);
 
-        $today = date('Y-m-d');
-        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $timezone = self::resolveTimezone();
+        $timezoneObject = new \DateTimeZone($timezone);
+        $todayDate = new \DateTimeImmutable('now', new \DateTimeZone($timezone));
+        $today = $todayDate->format('Y-m-d');
+        $yesterday = $todayDate->modify('-1 day')->format('Y-m-d');
 
-        if ($stats['last_login_date'] === $today) {
+        $lastLoginDate = self::normalizeDate($stats['last_login_date'], $timezoneObject);
+
+        if ($lastLoginDate === $today) {
+            return;
+        }
+
+        if ($lastLoginDate !== null && $lastLoginDate > $today) {
             return;
         }
 
         $newStreak = 1;
 
-        if ($stats['last_login_date'] === $yesterday) {
-            $newStreak = ((int) $stats['current_login_streak']) + 1;
+        if ($lastLoginDate !== null) {
+            $lastLoginDateObject = new \DateTimeImmutable($lastLoginDate, $timezoneObject);
+            $daysDiff = (int) $lastLoginDateObject->diff($todayDate)->format('%a');
+
+            if ($daysDiff === 1) {
+                $newStreak = ((int) $stats['current_login_streak']) + 1;
+            }
         }
 
         $longestStreak = max($newStreak, (int) $stats['longest_login_streak']);
@@ -325,6 +339,30 @@ class Gamification
             'unlocked' => count($unlockedByCode),
             'achievements' => $achievements,
         ];
+    }
+
+    private static function normalizeDate(mixed $date, \DateTimeZone $timezone): ?string
+    {
+        if (! is_string($date) || $date === '') {
+            return null;
+        }
+
+        try {
+            return (new \DateTimeImmutable($date, $timezone))->format('Y-m-d');
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
+    private static function resolveTimezone(): string
+    {
+        $timezone = config('app.timezone');
+
+        if (! is_string($timezone) || $timezone === '') {
+            return 'UTC';
+        }
+
+        return $timezone;
     }
 
 

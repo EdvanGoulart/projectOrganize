@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 return [
+    'app' => [
+        'timezone' => env('APP_TIMEZONE', 'America/Sao_Paulo'),
+    ],
     'database' => [
         // 'driver'   => 'sqlite',
         // 'database' => base_path('database/database.sqlite'),
