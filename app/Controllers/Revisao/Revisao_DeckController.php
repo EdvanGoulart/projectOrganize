@@ -21,7 +21,7 @@ class Revisao_DeckController
         );
 
         if ((bool) ($resultado['registrado'] ?? false)) {
-            Gamification::onDeckReviewCompleted((int) auth()->id, (int) request()->post('id_deck'));
+            Gamification::onDeckReviewCompleted((int) auth()->id, (int) ($resultado['id'] ?? 0));
         }
 
         header('Content-Type: application/json');

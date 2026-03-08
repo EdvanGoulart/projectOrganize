@@ -11,6 +11,7 @@ class Gamification
     private const XP_TASK_CREATED = 15;
     private const XP_TASK_COMPLETED = 50;
     private const XP_REVIEW_COMPLETED = 40;
+    private const XP_CARD_ANSWERED = 0;
     private const XP_LOGIN_STREAK = 10;
 
     private const ACHIEVEMENTS = [
@@ -171,13 +172,8 @@ class Gamification
 
         $newStreak = 1;
 
-        if ($lastLoginDate !== null) {
-            $lastLoginDateObject = new \DateTimeImmutable($lastLoginDate, $timezoneObject);
-            $daysDiff = (int) $lastLoginDateObject->diff($todayDate)->format('%a');
-
-            if ($daysDiff === 1) {
-                $newStreak = ((int) $stats['current_login_streak']) + 1;
-            }
+        if ($lastLoginDate === $yesterday) {
+            $newStreak = ((int) $stats['current_login_streak']) + 1;
         }
 
         $longestStreak = max($newStreak, (int) $stats['longest_login_streak']);
@@ -209,13 +205,25 @@ class Gamification
 
     public static function onTaskCompleted(int $userId, int $taskId): void
     {
+        $db = new Database(config('database'));
+
+        if (self::hasXpEventForReference($db, $userId, 'task_completed', $taskId)) {
+            return;
+        }
+
         self::addXp($userId, self::XP_TASK_COMPLETED, 'task_completed', 'Tarefa concluída', $taskId);
         self::evaluateAchievements($userId);
     }
 
-    public static function onDeckReviewCompleted(int $userId, int $deckId): void
+    public static function onDeckReviewCompleted(int $userId, int $reviewId): void
     {
-        self::addXp($userId, self::XP_REVIEW_COMPLETED, 'deck_review_completed', 'Revisão concluída', $deckId);
+        self::addXp($userId, self::XP_REVIEW_COMPLETED, 'deck_review_completed', 'Revisão concluída', $reviewId);
+        self::evaluateAchievements($userId);
+    }
+
+    public static function onCardAnswered(int $userId, int $reviewCardId): void
+    {
+        self::addXp($userId, self::XP_CARD_ANSWERED, 'card_answered', 'Card respondido', $reviewCardId);
         self::evaluateAchievements($userId);
     }
 
@@ -230,20 +238,10 @@ class Gamification
         $xp = (int) ($stats['total_xp'] ?? 0);
         $levelData = self::calculateLevel($xp);
 
-        $tasksCompleted = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM task WHERE idUser = :idUser AND status = :status',
-            params: ['idUser' => $userId, 'status' => 'completed']
-        )->fetch()['total'];
+        $tasksCompleted = self::countXpEvents($db, $userId, 'task_completed', true);
 
-        $deckReviews = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM deck_revisao WHERE id_user = :id_user',
-            params: ['id_user' => $userId]
-        )->fetch()['total'];
-
-        $cardsAnswered = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM deck_revisao_card WHERE id_user = :id_user',
-            params: ['id_user' => $userId]
-        )->fetch()['total'];
+        $deckReviews = self::countXpEvents($db, $userId, 'deck_review_completed');
+        $cardsAnswered = self::countXpEvents($db, $userId, 'card_answered');
 
         $recentAchievements = $db->query(
             query: 'SELECT description, created_at
@@ -433,6 +431,43 @@ class Gamification
         ];
     }
 
+    private static function hasXpEventForReference(Database $db, int $userId, string $eventType, int $referenceId): bool
+    {
+        $row = $db->query(
+            query: 'SELECT id
+                    FROM user_xp_events
+                    WHERE user_id = :user_id
+                      AND event_type = :event_type
+                      AND reference_id = :reference_id
+                    LIMIT 1',
+            params: [
+                'user_id' => $userId,
+                'event_type' => $eventType,
+                'reference_id' => $referenceId,
+            ]
+        )->fetch();
+
+        return $row !== false;
+    }
+
+    private static function countXpEvents(Database $db, int $userId, string $eventType, bool $distinctReferenceId = false): int
+    {
+        $selectCount = $distinctReferenceId
+            ? 'COUNT(DISTINCT reference_id)'
+            : 'COUNT(*)';
+
+        return (int) $db->query(
+            query: "SELECT {$selectCount} AS total
+                    FROM user_xp_events
+                    WHERE user_id = :user_id
+                      AND event_type = :event_type",
+            params: [
+                'user_id' => $userId,
+                'event_type' => $eventType,
+            ]
+        )->fetch()['total'];
+    }
+
     private static function calculateLevel(int $xp): array
     {
         $xpPerLevel = 100;
@@ -451,25 +486,11 @@ class Gamification
         $db = new Database(config('database'));
         $stats = self::getStats($userId);
 
-        $tasksCreated = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM task WHERE idUser = :idUser',
-            params: ['idUser' => $userId]
-        )->fetch()['total'];
+        $tasksCreated = self::countXpEvents($db, $userId, 'task_created', true);
+        $tasksCompleted = self::countXpEvents($db, $userId, 'task_completed', true);
 
-        $tasksCompleted = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM task WHERE idUser = :idUser AND status = :status',
-            params: ['idUser' => $userId, 'status' => 'completed']
-        )->fetch()['total'];
-
-        $cardsAnswered = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM deck_revisao_card WHERE id_user = :id_user',
-            params: ['id_user' => $userId]
-        )->fetch()['total'];
-
-        $deckReviews = (int) $db->query(
-            query: 'SELECT COUNT(*) AS total FROM deck_revisao WHERE id_user = :id_user',
-            params: ['id_user' => $userId]
-        )->fetch()['total'];
+        $cardsAnswered = self::countXpEvents($db, $userId, 'card_answered');
+        $deckReviews = self::countXpEvents($db, $userId, 'deck_review_completed');
 
         return [
             'tasks_created' => $tasksCreated,
