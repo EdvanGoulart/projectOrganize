@@ -1,19 +1,30 @@
 <div class="w-full">
-    <div class="flex h-screen bg-gray-900 text-white">
+    <div class="flex  bg-gray-900 text-white">
 
-        <?php require base_path('views/partials/_menuOptions.view.php') ?>
+
 
         <main id="conteudo" class="w-full lg:w-[80%] flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
-            <body>
-                <div id="lista" class="max-w-6xl mx-auto">
-                    <h1 class="text-2xl sm:text-3xl font-bold mb-2">🧠 Meus Decks</h1>
-                    <p class="text-sm text-gray-300 mb-6">Acompanhe sua etapa de revisão e estude no momento certo.</p>
+            <div id="lista" class="max-w-6xl mx-auto">
+                <section class="mb-6 rounded-2xl border border-slate-700/70 bg-gradient-to-br from-slate-800/95 to-slate-900/90 p-5 sm:p-6 shadow-xl shadow-black/20">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.25em] text-slate-400 mb-2">Revisão inteligente</p>
+                            <h1 class="text-2xl sm:text-3xl font-bold mb-2">🧠 Meus Decks</h1>
+                            <p class="text-sm text-slate-300">Acompanhe sua etapa de revisão e estude no momento certo.</p>
+                        </div>
 
-                    <form id="filtroEtapaForm" method="GET" class="mb-5 flex flex-col sm:flex-row sm:items-end gap-3">
+                        <a href="/deck/formCreateDeck" class="inline-flex items-center justify-center w-full md:w-auto px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition shadow-lg shadow-indigo-900/30">
+                            + Novo deck
+                        </a>
+                    </div>
+                </section>
+
+                <form id="filtroEtapaForm" method="GET" class="mb-5 rounded-xl border border-slate-700 bg-slate-800/70 p-4 sm:p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-end gap-3">
                         <div class="w-full sm:w-80">
                             <label for="filtro_etapa" class="block text-xs uppercase tracking-wide text-slate-300 mb-1">Filtrar por etapa de revisão</label>
-                            <select id="filtro_etapa" name="filtro_etapa" class="select select-bordered w-full bg-slate-800 border-slate-600 text-white">
+                            <select id="filtro_etapa" name="filtro_etapa" class="select select-bordered w-full bg-slate-900 border-slate-600 text-white">
                                 <option value="" <?= empty($filtroEtapaSelecionado) ? 'selected' : '' ?>>Todas as etapas</option>
                                 <option value="hoje" <?= ($filtroEtapaSelecionado ?? '') === 'hoje' ? 'selected' : '' ?>>Revisão hoje / atrasados</option>
                                 <option value="amanha" <?= ($filtroEtapaSelecionado ?? '') === 'amanha' ? 'selected' : '' ?>>Revisão amanhã</option>
@@ -23,19 +34,21 @@
                                 <option value="90dias" <?= ($filtroEtapaSelecionado ?? '') === '90dias' ? 'selected' : '' ?>>Ciclo contínuo (90+ dias)</option>
                             </select>
                         </div>
-                    </form>
 
-                    <div id="deckGrid">
-                        <?php require base_path('views/deck/_deckGrid.view.php') ?>
                     </div>
+                </form>
+
+                <div id="deckGrid">
+                    <?php require base_path('views/deck/_deckGrid.view.php') ?>
                 </div>
 
-                <!-- FORMULÁRIO DE EDIÇÃO -->
-                <div id="editDeckSection" class="hidden">
-                    <?php require base_path('views/deck/edit.view.php') ?>
-                </div>
+            </div>
 
-            </body>
+            <!-- FORMULÁRIO DE EDIÇÃO -->
+            <div id="editDeckSection" class="hidden">
+                <?php require base_path('views/deck/edit.view.php') ?>
+            </div>
+
         </main>
     </div>
 </div>

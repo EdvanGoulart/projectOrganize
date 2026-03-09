@@ -1,63 +1,64 @@
 <div class="w-full">
     <div class="flex h-screen bg-gray-900 text-white">
 
-        <?php require base_path('views/partials/_menuOptions.view.php') ?>
-
         <main id="conteudo" class="w-full lg:w-[80%] flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
-            <div class="max-w-xl mx-auto text-white px-1">
+            <div class="max-w-4xl mx-auto text-white px-1">
 
                 <!-- TÍTULO -->
-                <h1 class="text-3xl font-bold mb-6 text-center">
-                    Estudando: <?= $deck->title ?>
-                </h1>
+                <div class="mb-6 rounded-2xl border border-slate-700/60 bg-slate-800/60 p-4 sm:p-6 shadow-xl shadow-black/20 backdrop-blur">
+                    <p class="text-xs uppercase tracking-[0.25em] text-slate-300 mb-2">Modo de revisão</p>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-center sm:text-left break-words">
+                        Estudando: <?= $deck->title ?>
+                    </h1>
+                </div>
 
                 <!-- BARRA DE PROGRESSO -->
-                <div class="w-full bg-gray-700 rounded-full h-3 mb-3">
-                    <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all"></div>
+                <div class="w-full bg-slate-700/70 rounded-full h-3 mb-3 overflow-hidden">
+                    <div id="progressBar" class="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-sky-500 to-cyan-400 transition-all duration-500"></div>
                 </div>
 
                 <!-- TEXTO DE PROGRESSO -->
-                <p id="progressText" class="text-center mb-6 text-gray-300 text-lg">
+                <p id="progressText" class="text-center mb-6 text-slate-300 text-base sm:text-lg">
                     Card 1 de <?= count($cards) ?>
                 </p>
 
                 <!-- FLASHCARD -->
                 <div class="perspective w-full flex justify-center">
-                    <div id="flashcard" class="relative w-full bg-transparent h-64">
+                    <div id="flashcard" class="relative w-full bg-transparent h-[21rem] sm:h-80 lg:h-[22rem]">
 
                         <div id="cardInner"
                             class="relative w-full h-full text-center transition-transform duration-500 transform-style-3d">
 
                             <!-- FRENTE -->
-                            <div class="absolute w-full h-full backface-hidden bg-gray-800 rounded-xl shadow-xl p-6">
+                            <div class="absolute w-full h-full backface-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-800 to-slate-900 shadow-xl p-5 sm:p-6">
 
                                 <!-- TOPO -->
-                                <div class="flex justify-between items-center text-sm text-gray-300 mb-4">
+                                <div class="flex justify-between items-center text-xs sm:text-sm text-slate-300 mb-4">
                                     <span>🧠 Flashcard</span>
                                     <span>⏱️ <span id="timer">0</span>s</span>
                                 </div>
 
                                 <!-- CONTEÚDO -->
-                                <div class="flex items-center justify-center h-full">
-                                    <span id="card-front" class="text-2xl font-semibold"></span>
+                                <div class="flex items-center justify-center h-[calc(100%-2rem)] sm:h-[calc(100%-2.5rem)] px-2">
+                                    <span id="card-front" class="text-xl sm:text-2xl lg:text-3xl font-semibold leading-relaxed"></span>
                                 </div>
 
                             </div>
 
                             <!-- VERSO -->
                             <div
-                                class="absolute w-full h-full backface-hidden bg-gray-700 rounded-xl shadow-xl p-6 rotate-y-180">
+                                class="absolute w-full h-full backface-hidden rounded-2xl border border-indigo-400/20 bg-gradient-to-br from-slate-700 to-slate-800 shadow-xl p-5 sm:p-6 rotate-y-180">
 
                                 <!-- TOPO -->
-                                <div class="flex justify-between items-center text-sm text-gray-300 mb-4">
+                                <div class="flex justify-between items-center text-xs sm:text-sm text-slate-300 mb-4">
                                     <span>📘 Resposta</span>
                                     <span>⏱️ <span id="timer-back">0</span>s</span>
                                 </div>
 
                                 <!-- CONTEÚDO -->
-                                <div class="flex items-center justify-center h-full">
-                                    <span id="card-back" class="text-2xl font-semibold"></span>
+                                <div class="flex items-center justify-center h-[calc(100%-2rem)] sm:h-[calc(100%-2.5rem)] px-2">
+                                    <span id="card-back" class="text-xl sm:text-2xl lg:text-3xl font-semibold leading-relaxed text-cyan-100"></span>
                                 </div>
 
                             </div>
@@ -70,20 +71,20 @@
                 <div class="mt-6 text-center">
 
                     <button id="btnShow"
-                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold text-lg transition">
+                        class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold text-base sm:text-lg transition border border-indigo-400/40 shadow-lg shadow-indigo-900/30">
                         Mostrar resposta (Espaço)
                     </button>
 
-                    <div id="answerButtons" class="hidden mt-4 flex justify-center space-x-4">
+                    <div id="answerButtons" class="hidden mt-4 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
                         <button
                             id="btnRight"
-                            class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold text-lg transition">
+                            class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-semibold text-base sm:text-lg transition border border-emerald-300/30">
                             Acertei (→)
                         </button>
 
                         <button
                             id="btnWrong"
-                            class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold text-lg transition">
+                            class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-semibold text-base sm:text-lg transition border border-emerald-300/30">
                             Errei (←)
                         </button>
                     </div>
@@ -92,20 +93,31 @@
 
             </div>
 
-            <div id="reviewStatusMessage" class="hidden mt-4 rounded-lg border px-4 py-3 text-sm"></div>
+            <div id="reviewStatusMessage" class="hidden mt-4 rounded-xl border px-4 py-3 text-sm"></div>
 
             <!-- FEEDBACK FINAL -->
-            <div id="finalFeedback" class="hidden mt-10 bg-gray-800 rounded-xl p-6 shadow-xl">
+            <div id="finalFeedback" class="hidden mt-10 rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 p-5 sm:p-8 shadow-2xl shadow-black/30">
 
-                <h2 class="text-2xl font-bold text-center mb-6">
+                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">
                     📊 Resultado da Revisão
                 </h2>
 
-                <div class="space-y-3 text-lg">
-                    <p>📚 <strong>Total de cards:</strong> <span id="fbTotal"></span></p>
-                    <p>✅ <strong>Acertos:</strong> <span id="fbAcertos" class="text-green-400"></span></p>
-                    <p>❌ <strong>Erros:</strong> <span id="fbErros" class="text-red-400"></span></p>
-                    <p>⏱️ <strong>Tempo total:</strong> <span id="fbTempo"></span>s</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                    <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-2">Resumo</p>
+                        <div class="space-y-2 text-sm sm:text-base">
+                            <p>📚 <strong>Total de cards:</strong> <span id="fbTotal"></span></p>
+                            <p>✅ <strong>Acertos:</strong> <span id="fbAcertos" class="text-emerald-400"></span></p>
+                            <p>❌ <strong>Erros:</strong> <span id="fbErros" class="text-rose-400"></span></p>
+                            <p>⏱️ <strong>Tempo total:</strong> <span id="fbTempo"></span>s</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-4 flex flex-col justify-center items-center text-center">
+                        <p class="text-xs uppercase tracking-wide text-slate-300 mb-2">Aproveitamento</p>
+                        <p id="fbScore" class="text-4xl sm:text-5xl font-bold text-cyan-300">0%</p>
+                        <p id="fbMessage" class="text-sm sm:text-base text-slate-200 mt-2"></p>
+                    </div>
                 </div>
 
             </div>
@@ -214,6 +226,19 @@
                 $("#fbAcertos").text(totalAcertos);
                 $("#fbErros").text(totalErros);
                 $("#fbTempo").text(tempoTotal);
+
+                const score = cards.length ? Math.round((totalAcertos / cards.length) * 100) : 0;
+                $("#fbScore").text(`${score}%`);
+
+                let scoreMessage = "Bom começo! Continue revisando para consolidar melhor.";
+                if (score >= 90) {
+                    scoreMessage = "Excelente desempenho! Seu domínio desse deck está muito forte. 🚀";
+                } else if (score >= 70) {
+                    scoreMessage = "Ótimo resultado! Você está no caminho certo. 💪";
+                } else if (score >= 50) {
+                    scoreMessage = "Boa evolução! Mais algumas revisões e você sobe de nível. ✨";
+                }
+                $("#fbMessage").text(scoreMessage);
 
                 // Mostra feedback
                 $("#finalFeedback").removeClass("hidden");

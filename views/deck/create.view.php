@@ -1,10 +1,6 @@
 <div class="w-full">
     <div class="flex h-screen bg-gray-900 text-white">
 
-        <!-- Menu lateral -->
-        <?php require base_path('views/partials/_menuOptions.view.php') ?>
-
-
         <main class="flex-1 flex justify-center items-start pt-10">
             <div class="w-4/5 text-white">
                 <h1 class="text-2xl font-bold mb-4">Criar uma nova lista de cartões</h1>
