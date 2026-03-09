@@ -82,6 +82,14 @@ class EditController
 
         $deck = $_POST;
 
+        if (empty($deck['discipline'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Selecione uma disciplina para atualizar o deck.'
+            ]);
+            return;
+        }
+
 
         $idDeck = Deck::update($deck['id'], $deck['titulo'], $deck['descricao'], $deck['discipline']);
 
@@ -89,7 +97,7 @@ class EditController
             $idCard = Card::update($c['id'], $c['termo'], $c['definicao'], $idDeck);
         }
 
-        if ($deck['cards_new']) {
+        if (isset($deck['cards_new']) && !empty($deck['cards_new'])) {
             foreach ($deck['cards_new'] as $card) {
                 // dd();
                 if (($card['termo'] == '' or $card['termo'] == null) or ($card['definicao'] == '' or $card['definicao'] == null)) {

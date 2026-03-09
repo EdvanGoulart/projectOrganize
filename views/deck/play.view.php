@@ -120,6 +120,12 @@
                     </div>
                 </div>
 
+                <div class="mt-6 text-center">
+                    <a href="/deck-list" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition shadow-lg shadow-indigo-900/30">
+                        Voltar para meus decks
+                    </a>
+                </div>
+
             </div>
 
 

@@ -1,12 +1,14 @@
 <div class="w-full">
-    <div class="flex h-screen bg-gray-900 text-white">
+    <div class="flex bg-gray-900 text-white min-h-screen">
+        <main class="w-full lg:w-[80%] flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+            <div class="max-w-5xl mx-auto">
+                <section class="mb-6 rounded-2xl border border-slate-700/70 bg-gradient-to-br from-slate-800/95 to-slate-900/90 p-5 sm:p-6 shadow-xl shadow-black/20">
+                    <p class="text-xs uppercase tracking-[0.25em] text-slate-400 mb-2">Decks de estudo</p>
+                    <h1 class="text-2xl sm:text-3xl font-bold mb-2">➕ Criar novo deck</h1>
+                    <p class="text-sm text-slate-300">Adicione o conteúdo do seu deck e organize seus cards para revisar com frequência.</p>
+                </section>
 
-        <main class="flex-1 flex justify-center items-start pt-10">
-            <div class="w-4/5 text-white">
-                <h1 class="text-2xl font-bold mb-4">Criar uma nova lista de cartões</h1>
-
-                <form id="formDeck" class="space-y-6">
-                    <!-- Campo título -->
+                <form id="formDeck" class="space-y-6 rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6">
                     <input
                         type="text"
                         name="titulo"
@@ -62,7 +64,7 @@
                         <button
                             type="submit"
                             class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full">
-                            Criar e praticar
+                            Criar deck
                         </button>
                     </div>
                 </form>
@@ -106,11 +108,22 @@
             e.preventDefault();
 
             const titulo = $('input[name="titulo"]').val().trim();
+            const disciplina = $('select[name="discipline"]').val();
+
             if (!titulo) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Campo obrigatório',
                     text: 'Digite um título para o deck antes de salvar.'
+                });
+                return;
+            }
+
+            if (!disciplina) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Disciplina obrigatória',
+                    text: 'Selecione uma disciplina para continuar.'
                 });
                 return;
             }
@@ -134,28 +147,12 @@
                             icon: 'success',
                             title: 'Sucesso!',
                             text: 'Deck criado com sucesso 🎉',
-                            showConfirmButton: false,
-                            timer: 1800
+                            confirmButtonText: 'Voltar para meus decks'
+                        }).then(() => {
+                            window.location.href = '/deck-list';
                         });
 
-                        $('#formDeck')[0].reset();
-                        $('#listaCards').html(`
-                        <div class="cardItem bg-[#2a2f45] p-4 rounded-xl">
-                            <div class="flex space-x-4">
-                                <input
-                                    type="text"
-                                    name="cards[0][termo]"
-                                    placeholder="Termo"
-                                    class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
-                                <input
-                                    type="text"
-                                    name="cards[0][definicao]"
-                                    placeholder="Definição"
-                                    class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
-                            </div>
-                        </div>
-                    `);
-                        cardIndex = 1;
+ 
                     } else {
                         Swal.fire({
                             icon: 'error',

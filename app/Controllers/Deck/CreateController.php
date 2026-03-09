@@ -55,7 +55,12 @@ class CreateController
         $cards = $_POST['cards'] ?? [];
 
         if (!$titulo || empty($cards)) {
-            echo json_encode(['error' => 'Preencha o título e adicione ao menos um cartão.']);
+            echo json_encode(['success' => false, 'message' => 'Preencha o título e adicione ao menos um cartão.']);
+            return;
+        }
+
+        if (!$discipline) {
+            echo json_encode(['success' => false, 'message' => 'Selecione uma disciplina para criar o deck.']);
             return;
         }
 

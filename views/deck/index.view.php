@@ -116,10 +116,11 @@
                     let idDeck = res.data.deck.id;
 
 
-                    let disciplinaSelecionada = res.data.discipline_check.id
+                    let disciplinaSelecionada = res.data.discipline_check?.id ?? '';
 
                     let select = $('#discipline');
-                    select.empty(); // remove tudo
+                    select.empty();
+                    select.append('<option value="">Selecione uma disciplina</option>');
 
                     $.each(res.data.disciplineAll, function(index, item) {
                         if (item.id == disciplinaSelecionada) {
@@ -176,12 +177,12 @@
     });
 
     $('#btnAddCard').on('click', function() {
-        console.log(window.ultimoIdCard++);
+
         let cardIndex = window.ultimoIdCard++; // garante sequência
-        let idDeck = window.idDeckGlobal; // garante sequência
+        let idDeck = window.idDeckGlobal;
 
         $('#listaCards').append(`
-        <div class="cardItem bg-[#2a2f45] p-4 rounded-xl animate__animated animate__fadeIn" data-id="${cardIndex}" data-iddeck="${idDeck}">
+        <div class="cardItem bg-[#2a2f45] p-4 rounded-xl animate__animated animate__fadeIn" data-id="${cardIndex}" data-iddeck="${idDeck}" data-new="1">
             <div class="flex space-x-4">
                 <input type="hidden" name="cards_new[${cardIndex}][id]" value="${cardIndex}"/>
                 <input type="text" name="cards_new[${cardIndex}][termo]" placeholder="Termo"
@@ -201,6 +202,13 @@
         let card = $(this).closest('.cardItem');
         let id = card.data('id');
         let idDeck = card.data('iddeck');
+
+        if (card.data('new') === 1 || card.data('new') === '1') {
+            card.fadeOut(150, function() {
+                $(this).remove();
+            });
+            return;
+        }
 
         if (!id || !idDeck) {
             Swal.fire({
@@ -268,10 +276,28 @@
 
     $('#formDeckEdit').on('submit', function(e) {
         e.preventDefault();
+
+        const disciplina = $('#discipline').val();
+        if (!disciplina) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Disciplina obrigatória',
+                text: 'Selecione uma disciplina para continuar.'
+            });
+            return;
+        }
+
         const data = $(this).serialize();
         $.post('/deck/update', data, function(res) {
             if (res.success) {
-                Swal.fire('Sucesso!', 'Deck atualizado com sucesso!', 'success');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Deck atualizado com sucesso!',
+                    confirmButtonText: 'Voltar para meus decks'
+                }).then(() => {
+                    window.location.href = '/deck-list';
+                });
 
             } else if (res.validacao) {
                 Swal.fire({
@@ -283,6 +309,11 @@
                 Swal.fire('Erro', res.message, 'error');
             }
         }, 'json');
+    });
+
+    $(document).on('click', '#btnCancelEditDeck', function() {
+        $('#editDeckSection').addClass('hidden');
+        $('#lista').removeClass('hidden');
     });
 
 
