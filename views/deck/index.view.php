@@ -5,7 +5,7 @@
 
         <main id="conteudo" class="w-full lg:w-[80%] flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
-            <div id="lista" class="max-w-6xl mx-auto">
+            <div id="lista" class=" mx-auto">
                 <section class="mb-6 rounded-2xl border border-slate-700/70 bg-gradient-to-br from-slate-800/95 to-slate-900/90 p-5 sm:p-6 shadow-xl shadow-black/20">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>

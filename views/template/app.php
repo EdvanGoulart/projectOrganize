@@ -56,7 +56,7 @@
 </style>
 
 <body>
-    <div class="mx-auto max-w-7xl min-h-screen flex flex-col space-y-2 px-2 sm:px-4">
+    <div class="w-full min-h-screen flex flex-col space-y-2 px-2 sm:px-4 2xl:px-8">
         <?php require base_path('views/partials/_navbar.view.php') ?>
 
         <?php require base_path('views/partials/_mensagem.view.php'); ?>

@@ -50,6 +50,6 @@ class LoginController
 
         flash()->push('mensagem', 'Seja bem-vindo ' . $user->name . '!');
 
-        return redirect('/task');
+        return redirect('/dashboard');
     }
 }

@@ -1,9 +1,9 @@
 <main class="w-full bg-base-200 rounded-xl">
 
-    <div class="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div class="w-full p-3 sm:p-4 lg:p-6 2xl:px-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 xl:gap-5">
 
         <!-- Coluna base -->
-        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
+        <div class="flex flex-col min-h-[62vh] xl:min-h-[74vh] 2xl:min-h-[78vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
                 <h3 class="text-lg font-bold text-base-content mb-5">Pendente</h3>
                 <div id="pendingList" class="task-column flex-1 overflow-auto pr-1 custom-scroll">
@@ -18,7 +18,7 @@
         </div>
 
         <!-- Copie as próximas colunas com a mesma estrutura -->
-        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
+        <div class="flex flex-col min-h-[62vh] xl:min-h-[74vh] 2xl:min-h-[78vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
                 <h3 class="text-lg font-bold text-base-content mb-5">Andamento</h3>
                 <div id="progressList" class="task-column flex-1 overflow-auto pr-1 custom-scroll"></div>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
+        <div class="flex flex-col min-h-[62vh] xl:min-h-[74vh] 2xl:min-h-[78vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
                 <h3 class="text-lg font-bold text-base-content mb-5">Revisão</h3>
                 <div id="reviewList" class="task-column flex-1 overflow-auto pr-1 custom-scroll"></div>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col min-h-[60vh] xl:min-h-[72vh] bg-base-100 border border-base-300 shadow rounded-xl">
+        <div class="flex flex-col min-h-[62vh] xl:min-h-[74vh] 2xl:min-h-[78vh] bg-base-100 border border-base-300 shadow rounded-xl">
             <div class="flex flex-col flex-1 p-3 overflow-hidden">
                 <h3 class="text-lg font-bold text-base-content mb-5">Concluído</h3>
                 <div id="completedList" class="task-column flex-1 overflow-auto pr-1 custom-scroll"></div>
@@ -58,7 +58,7 @@
 
 
 
-    <div class="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
+    <div class="w-full p-3 sm:p-4 lg:p-6 2xl:px-8">
         <div class="card bg-base-100 shadow border border-base-300">
             <div class="card-body flex flex-col xl:flex-row items-stretch gap-6">
                 <!-- Filtro (lado esquerdo) -->

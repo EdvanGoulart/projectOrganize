@@ -12,24 +12,6 @@ use Exception;
 
 class EditController
 {
-    public function findCard()
-    {
-        header('Content-Type: application/json');
-        $id = (int) $_GET['id'];
-
-        if (!$task) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Tarefa não encontrada'
-            ]);
-            return;
-        }
-
-        echo json_encode([
-            'success' => true,
-            'task' => $task
-        ]);
-    }
 
     public function findDeckCards()
     {

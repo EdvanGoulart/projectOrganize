@@ -84,7 +84,7 @@
 
                         <button
                             id="btnWrong"
-                            class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-semibold text-base sm:text-lg transition border border-emerald-300/30">
+                            class="w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-500 rounded-xl font-semibold text-base sm:text-lg transition border border-red-300/30 text-white">
                             Errei (←)
                         </button>
                     </div>
