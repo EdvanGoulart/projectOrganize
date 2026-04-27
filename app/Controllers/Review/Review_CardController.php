@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers\Revisao;
+namespace App\Controllers\Review;
 
 use App\Models\Gamification;
-use App\Models\Revisao_Card;
+use App\Models\Review_Card;
 use Core\Validacao;
 use Exception;
 
-class Revisao_CardController
+class Review_CardController
 {
 
     public function registerReview()
     {
 
-        $idDiscipline = Revisao_Card::create(
+        $idDiscipline = Review_Card::create(
             request()->post('id_deck'),
             request()->post('id_card'),
-            request()->post('resultado'),
-            request()->post('tempo_gasto')
+            request()->post('result'),
+            request()->post('time_spent')
         );
 
         Gamification::onCardAnswered((int) auth()->id, (int) $idDiscipline);

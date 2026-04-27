@@ -76,19 +76,19 @@ class EditController
         $idDeck = Deck::update($deck['id'], $deck['titulo'], $deck['descricao'], $deck['discipline']);
 
         foreach ($deck['cards'] as $c) {
-            $idCard = Card::update($c['id'], $c['termo'], $c['definicao'], $idDeck);
+            $idCard = Card::update($c['id'], $c['term'], $c['definition'], $idDeck);
         }
 
         if (isset($deck['cards_new']) && !empty($deck['cards_new'])) {
             foreach ($deck['cards_new'] as $card) {
                 // dd();
-                if (($card['termo'] == '' or $card['termo'] == null) or ($card['definicao'] == '' or $card['definicao'] == null)) {
+                if (($card['term'] == '' or $card['term'] == null) or ($card['definition'] == '' or $card['definition'] == null)) {
                     echo json_encode([
                         'validacao' => 'Os campos devem ser prenchidos !',
                     ]);
                     return;
                 }
-                $idCard_new = Card::create($idDeck, $card['termo'], $card['definicao']);
+                $idCard_new = Card::create($idDeck, $card['term'], $card['definition']);
             }
         }
 

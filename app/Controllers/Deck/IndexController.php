@@ -6,6 +6,7 @@ namespace App\Controllers\Deck;
 
 use App\Models\Deck;
 use App\Models\Discipline;
+use App\Models\Review_Card;
 
 class IndexController
 {
@@ -30,6 +31,28 @@ class IndexController
         return view('deck/index', [
             'deckList' => $deckList,
             'filtroEtapaSelecionado' => $filtroEtapaSelecionado,
+        ]);
+    }
+
+    public function reviewHistory()
+    {
+        $deckId = (int) request()->get('id_deck');
+
+        if ($deckId <= 0) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Deck inválido para consultar histórico.',
+            ]);
+            return;
+        }
+
+        $history = Review_Card::historyByDeckForUser((int) auth()->id, $deckId);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data' => $history,
         ]);
     }
 

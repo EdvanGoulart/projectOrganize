@@ -5,14 +5,13 @@ declare(strict_types=1);
 use App\Controllers\IndexController;
 use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
-use App\Controllers\Notas;
 use App\Controllers\RegisterController;
 use App\Middlewares\AuthMiddleware;
 use App\Middlewares\GuestMiddleware;
 use App\Controllers\Task;
 use App\Controllers\Discipline;
 use App\Controllers\Deck;
-use App\Controllers\Revisao;
+use App\Controllers\Review;
 use App\Controllers\Dashboard;
 use App\Controllers\Profile;
 use App\Controllers\ForgotPasswordController;
@@ -69,6 +68,7 @@ use Core\Route;
 
 
     ->get('/deck-list', [Deck\IndexController::class, 'index'], AuthMiddleware::class)
+    ->get('/deck/review/historico', [Deck\IndexController::class, 'reviewHistory'], AuthMiddleware::class)
     ->get('/deck/formCreateDeck', [Deck\IndexController::class, 'formCreateDeck'], AuthMiddleware::class)
     ->post('/deck/create', [Deck\CreateController::class, 'storeAjax'], AuthMiddleware::class)
     ->post('/deck/delete', Deck\DeleteController::class, AuthMiddleware::class)
@@ -78,8 +78,8 @@ use Core\Route;
     ->get('/deck/practice', [Deck\PracticeController::class, 'index'], AuthMiddleware::class)
     // ->get('/deck/practice/{id}', [Deck\PracticeController::class, 'index'], AuthMiddleware::class)
 
-    ->post('/deck/revisao/card', [Revisao\Revisao_CardController::class, 'registerReview'], AuthMiddleware::class)
-    ->post('/deck/revisao/finalizar', [Revisao\Revisao_DeckController::class, 'registerReview'], AuthMiddleware::class)
+    ->post('/deck/review/card', [Review\Review_CardController::class, 'registerReview'], AuthMiddleware::class)
+    ->post('/deck/review/finalizar', [Review\Review_DeckController::class, 'registerReview'], AuthMiddleware::class)
 
 
     ->get('/dashboard', Dashboard\IndexController::class, AuthMiddleware::class)

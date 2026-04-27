@@ -300,9 +300,39 @@
                     completed: ''
                 };
 
+                function formatarDataEntrega(dataEntrega) {
+                    if (!dataEntrega) return 'Sem prazo';
+
+                    const dataNormalizada = dataEntrega.split(' ')[0];
+                    const [ano, mes, dia] = dataNormalizada.split('-');
+
+                    if (!ano || !mes || !dia) return 'Sem prazo';
+
+                    return `${dia}/${mes}/${ano}`;
+                }
+
+                function obterEstiloPrioridade(prioridade) {
+                    const prioridadeNormalizada = (prioridade || '').toLowerCase();
+                    const estilos = {
+                        alta: 'badge badge-error badge-outline',
+                        media: 'badge badge-warning badge-outline',
+                        baixa: 'badge badge-success badge-outline'
+                    };
+
+                    return estilos[prioridadeNormalizada] || 'badge badge-ghost';
+                }
+
+                function capitalizarTexto(texto) {
+                    if (!texto) return 'Não definida';
+                    return texto.charAt(0).toUpperCase() + texto.slice(1);
+                }
 
                 function gerarHTMLTask(task) {
-                    console.log(task);
+
+                    const dataEntregaFormatada = formatarDataEntrega(task.endDate);
+                    const prioridadeClasse = obterEstiloPrioridade(task.priority);
+                    const prioridadeLabel = capitalizarTexto(task.priority);
+
                     return `
                         <div id="task_${task.id}" data-id="${task.id}" class="task-card group w-full bg-base-200 flex p-0 border border-base-300 rounded-xl mb-2 relative transition hover:shadow-md">
                             <!-- Faixa de cor da disciplina -->
@@ -310,8 +340,8 @@
                             
 
                             <!-- Conteúdo -->
-                            <div class="w-full p-3">
-                                <div class="flex justify-between items-start h-auto">
+                            <div class="min-w-[98%] p-3">
+                                <div class="flex justify-between items-start gap-3 h-auto">
                                     <h3 class="font-bold break-words break-all h-auto pb-2">${task.name}</h3>
                                     
 
@@ -322,7 +352,7 @@
                                         </button>
 
                                         <!-- Menu de opções -->
-                                        <div class="absolute right-0 mt-2 w-36 bg-base-100 rounded-lg shadow-lg border border-base-300 hidden z-50">
+                                        <div class="task-options-menu absolute right-0 mt-2 w-36 bg-base-100 rounded-lg shadow-lg border border-base-300 hidden z-50">
                                             <ul class="text-sm text-gray-700">
                                                 <li>
                                                     <button type="button" class="w-full text-left text-base-content px-4 py-2 hover:bg-base-200 hover:rounded-lg"
@@ -342,6 +372,19 @@
                                 </div>
 
                                 <p class="mt-2 break-words text-base-content/70">${task.description}</p>
+
+                                
+                                <div class="mt-4 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+                                    <span class="badge badge-outline badge-info gap-1">
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Entrega: ${dataEntregaFormatada}
+                                    </span>
+
+                                    <span class="${prioridadeClasse} gap-1">
+                                        <i class="fa-solid fa-flag"></i>
+                                        Prioridade: ${prioridadeLabel}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                      `;

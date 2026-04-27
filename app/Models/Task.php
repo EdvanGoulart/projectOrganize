@@ -121,7 +121,7 @@ class Task
                     'idDiscipline' => $idDiscipline,
                     'endDate' => $endDate
                 ],
-                // $nota ? ['nota' => encrypt($nota)] : []
+
             )
         );
     }

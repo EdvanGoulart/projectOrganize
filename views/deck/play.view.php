@@ -250,12 +250,12 @@
                 $("#finalFeedback").removeClass("hidden");
 
                 // Envia resumo do deck
-                $.post("/deck/revisao/finalizar", {
+                $.post("/deck/review/finalizar", {
                     id_deck: <?= $deck->id ?>,
                     total_cards: cards.length,
-                    total_acertos: totalAcertos,
-                    total_erros: totalErros,
-                    tempo_gasto: tempoTotal
+                    total_correct: totalAcertos,
+                    total_error: totalErros,
+                    time_spent: tempoTotal
 
                 }).done(function(res) {
                     const box = $("#reviewStatusMessage");
@@ -282,8 +282,8 @@
 
 
             // 🃏 CARD ATUAL
-            $("#card-front").text(cards[index].termo);
-            $("#card-back").text(cards[index].definicao);
+            $("#card-front").text(cards[index].term);
+            $("#card-back").text(cards[index].definition);
 
             $("#btnShow").show();
             $("#answerButtons").hide();
@@ -317,11 +317,11 @@
             }
 
             // Envia card individual
-            $.post("/deck/revisao/card", {
+            $.post("/deck/review/card", {
                 id_deck: <?= $deck->id ?>,
                 id_card: cards[index].id,
-                resultado: type === 'right' ? 'acerto' : 'erro',
-                tempo_gasto: tempoGasto
+                result: type === 'right' ? 'acerto' : 'erro',
+                time_spent: tempoGasto
             });
 
             // 🔄 Primeiro desvira o card

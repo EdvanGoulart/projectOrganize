@@ -67,10 +67,10 @@ class CreateController
         $deckId = Deck::create($titulo, $descricao, $discipline);
 
         foreach ($cards as $card) {
-            $termo = $card['termo'] ?? '';
-            $definicao = $card['definicao'] ?? '';
-            if ($termo && $definicao) {
-                Card::create($deckId, $termo, $definicao);
+            $term = $card['term'] ?? '';
+            $definition = $card['definition'] ?? '';
+            if ($term && $definition) {
+                Card::create($deckId, $term, $definition);
             }
         }
 

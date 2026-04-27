@@ -7,19 +7,18 @@ namespace App\Models;
 use Core\Database;
 
 
-class Revisao_Deck
+class Review_Deck
 {
     public ?int $id;
 
     public int $id_deck;
     public int $id_user;
-    public string $data_revisao;
-    public int $tempo_gasto;
-    public int $xp_gerado;
-    public int $total_acertos;
-    public int $total_erros;
+    public string $date_review;
+    public int $time_spent;
+    public int $total_correct;
+    public int $total_error;
 
-    public static function create($id_deck, $tempo_gasto, $total_acertos, $total_erros): array
+    public static function create($id_deck, $time_spent, $total_correct, $total_error): array
     {
         $idDeck = (int) $id_deck;
         $idUser = (int) auth()->id;
@@ -40,16 +39,16 @@ class Revisao_Deck
         $database = new Database(config('database'));
 
         $database->query(
-            'INSERT INTO deck_revisao (id_deck, id_user, data_revisao, tempo_gasto, total_acertos, total_erros)
-          VALUES (:id_deck, :id_user, :data_revisao, :tempo_gasto, :total_acertos, :total_erros)',
+            'INSERT INTO deck_review (id_deck, id_user, date_review, time_spent, total_correct, total_error)
+          VALUES (:id_deck, :id_user, :date_review, :time_spent, :total_correct, :total_error)',
             null,
             [
                 ':id_deck' => $idDeck,
                 ':id_user' => $idUser,
-                ':data_revisao' => $hoje,
-                ':tempo_gasto' => (int) $tempo_gasto,
-                'total_acertos' => (int) $total_acertos,
-                'total_erros' => (int) $total_erros,
+                ':date_review' => $hoje,
+                ':time_spent' => (int) $time_spent,
+                'total_correct' => (int) $total_correct,
+                'total_error' => (int) $total_error,
             ]
         );
 
@@ -74,11 +73,11 @@ class Revisao_Deck
 
         $datas = $db->query(
             query: '
-                SELECT DISTINCT DATE(data_revisao) AS data_revisao
-                FROM deck_revisao
+                SELECT DISTINCT DATE(date_review) AS date_review
+                FROM deck_review
                 WHERE id_deck = :id_deck
                   AND id_user = :id_user
-                ORDER BY data_revisao ASC
+                ORDER BY date_review ASC
             ',
             params: [
                 'id_deck' => $idDeck,
@@ -105,7 +104,7 @@ class Revisao_Deck
         $proximaData = null;
 
         foreach ($datas as $linha) {
-            $dataAtual = (string) ($linha['data_revisao'] ?? '');
+            $dataAtual = (string) ($linha['date_review'] ?? '');
 
             if ($dataAtual === '') {
                 continue;

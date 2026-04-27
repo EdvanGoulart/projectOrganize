@@ -53,9 +53,6 @@ class Discipline
 
         $set = 'name = :name, color = :color,  description = :description ';
 
-        // if ($discipline) {
-        //     $set .= ', nota = :nota';
-        // }
 
         $db->query(
             query: "

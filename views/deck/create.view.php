@@ -38,12 +38,12 @@
                             <div class="flex space-x-4">
                                 <input
                                     type="text"
-                                    name="cards[0][termo]"
+                                    name="cards[0][term]"
                                     placeholder="Termo"
                                     class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
                                 <input
                                     type="text"
-                                    name="cards[0][definicao]"
+                                    name="cards[0][definition]"
                                     placeholder="Definição"
                                     class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
                             </div>
@@ -85,9 +85,9 @@
             const novoCard = `
         <div class="cardItem bg-[#2a2f45] p-4 rounded-xl animate__animated animate__fadeIn">
             <div class="flex space-x-4">
-                <input type="text" name="cards[${cardIndex}][termo]" placeholder="Termo"
+                <input type="text" name="cards[${cardIndex}][term]" placeholder="term"
                     class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
-                <input type="text" name="cards[${cardIndex}][definicao]" placeholder="Definição"
+                <input type="text" name="cards[${cardIndex}][definition]" placeholder="Definição"
                     class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
                 <button type="button" class="btnRemover text-red-400 font-bold ml-2">✕</button>
             </div>
@@ -152,7 +152,7 @@
                             window.location.href = '/deck-list';
                         });
 
- 
+
                     } else {
                         Swal.fire({
                             icon: 'error',

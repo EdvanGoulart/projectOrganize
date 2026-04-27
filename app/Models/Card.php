@@ -11,35 +11,35 @@ use PDO;
 class Card
 {
     public ?int $id;
-    public string $termo;
-    public string $definicao;
+    public string $term;
+    public string $definition;
     public int $id_deck;
 
 
 
-    public static function create($id_deck, $termo, $definicao)
+    public static function create($id_deck, $term, $definition)
     {
         $database = new Database(config('database'));
 
         $database->query(
-            'INSERT INTO card (id_deck, termo, definicao)
-         VALUES (:id_deck, :termo, :definicao)',
+            'INSERT INTO card (id_deck, term, definition)
+         VALUES (:id_deck, :term, :definition)',
             null,
             [
                 ':id_deck' => $id_deck,
-                ':termo' => $termo,
-                ':definicao' => $definicao
+                ':term' => $term,
+                ':definition' => $definition
             ]
         );
 
         return (int)$database->lastInsertId();
     }
 
-    public static function update($id, $termo, $definicao, $id_deck)
+    public static function update($id, $term, $definition, $id_deck)
     {
         $db = new Database(config('database'));
 
-        $set = 'id = :id, termo = :termo, definicao = :definicao,  id_deck = :id_deck ';
+        $set = 'id = :id, term = :term, definition = :definition,  id_deck = :id_deck ';
 
         $db->query(
             query: "
@@ -50,8 +50,8 @@ class Card
             params: array_merge(
                 [
                     'id'     => $id,
-                    'termo' => $termo,
-                    'definicao' => $definicao,
+                    'term' => $term,
+                    'definition' => $definition,
                     'id_deck' => $id_deck,
 
                 ]

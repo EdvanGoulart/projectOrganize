@@ -8,7 +8,7 @@ use Core\Database;
 use DateTime;
 use Exception;
 use PDO;
-use App\Models\Revisao_Deck;
+use App\Models\Review_Deck;
 use DateTimeImmutable;
 
 class Deck
@@ -24,8 +24,7 @@ class Deck
     public int $total_revisoes = 0;
     public ?string $proxima_revisao = null;
     public int $dias_para_revisao = 0;
-    public string $etapa_revisao = 'Sem revisão';
-    public ?string $aviso_revisao = null;
+
 
 
     public static function create($titulo, $descricao, $disciplina)
@@ -54,10 +53,10 @@ class Deck
         $query = '
             SELECT
                 d.*,
-                MAX(dr.data_revisao) AS ultima_revisao,
+                MAX(dr.date_review) AS ultima_revisao,
                 COUNT(dr.id) AS total_revisoes
             FROM deck d
-            LEFT JOIN deck_revisao dr
+            LEFT JOIN deck_review dr
                 ON dr.id_deck = d.id
                 AND dr.id_user = d.idUser
             WHERE d.idUser = :idUser
@@ -80,7 +79,7 @@ class Deck
         )->fetchAll();
 
         foreach ($decks as $deck) {
-            $resumo = Revisao_Deck::buildScheduleSummary((int) $deck->id, (int) auth()->id);
+            $resumo = Review_Deck::buildScheduleSummary((int) $deck->id, (int) auth()->id);
 
             $deck->ultima_revisao = $resumo['ultima_revisao'];
             $deck->proxima_revisao = $resumo['proxima_revisao'];

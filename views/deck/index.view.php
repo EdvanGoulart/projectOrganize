@@ -38,6 +38,16 @@
                     </div>
                 </form>
 
+                <div id="modalHistorico" class="hidden fixed inset-0 z-50 bg-black/70 p-4">
+                    <div class="max-w-5xl mx-auto mt-8 rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl max-h-[85vh] overflow-y-auto">
+                        <div class="flex items-center justify-between p-4 border-b border-slate-700">
+                            <h2 id="historicoTitulo" class="text-xl font-bold">Histórico do deck</h2>
+                            <button type="button" id="fecharHistorico" class="text-slate-300 hover:text-white">✕</button>
+                        </div>
+                        <div id="historicoConteudo" class="p-4 text-slate-200"></div>
+                    </div>
+                </div>
+
                 <div id="deckGrid">
                     <?php require base_path('views/deck/_deckGrid.view.php') ?>
                 </div>
@@ -145,9 +155,9 @@
                         <div class="cardItem bg-[#2a2f45] p-4 rounded-xl animate__animated animate__fadeIn" data-id="${card.id}" data-iddeck="${idDeck}">
                         <div class="flex space-x-4">
                             <input type="hidden"name="cards[${card.id}][id]" value="${card.id}"/>
-                            <input type="text"name="cards[${card.id}][termo]" value="${card.termo}" placeholder="Termo"
+                            <input type="text"name="cards[${card.id}][term]" value="${card.term}" placeholder="Termo"
                                 class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
-                            <input type="text" name="cards[${card.id}][definicao]" value="${card.definicao}" placeholder="Definição"
+                            <input type="text" name="cards[${card.id}][definition]" value="${card.definition}" placeholder="Definição"
                                 class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
                             <button type="button" class="btnRemover text-red-400 font-bold ml-2">✕</button>
                         </div>
@@ -185,9 +195,9 @@
         <div class="cardItem bg-[#2a2f45] p-4 rounded-xl animate__animated animate__fadeIn" data-id="${cardIndex}" data-iddeck="${idDeck}" data-new="1">
             <div class="flex space-x-4">
                 <input type="hidden" name="cards_new[${cardIndex}][id]" value="${cardIndex}"/>
-                <input type="text" name="cards_new[${cardIndex}][termo]" placeholder="Termo"
+                <input type="text" name="cards_new[${cardIndex}][term]" placeholder="Termo"
                     class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
-                <input type="text" name="cards_new[${cardIndex}][definicao]" placeholder="Definição"
+                <input type="text" name="cards_new[${cardIndex}][definition]" placeholder="Definição"
                     class="flex-1 bg-[#1e2130] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" />
                 <button type="button" class="btnRemover text-red-400 font-bold ml-2">✕</button>
             </div>
@@ -363,5 +373,93 @@
                 });
             }
         });
+    });
+
+    function formatSecondsToLabel(totalSeconds) {
+        const secs = Number(totalSeconds) || 0;
+        if (secs < 60) return `${secs}s`;
+
+        const min = Math.floor(secs / 60);
+        const rem = secs % 60;
+
+        return `${min}m ${rem}s`;
+    }
+
+    function renderHistoricoRevisoes(deck) {
+        if (!deck) {
+            return '<p class="text-slate-300">Este deck ainda não possui revisões registradas.</p>';
+        }
+
+        const cardsRows = (deck.cards || []).map(card => `
+            <tr class="border-t border-slate-700/80">
+                <td class="py-2 pr-2">${card.card_term || 'Card removido'}</td>
+                <td class="py-2 pr-2 text-center">${card.acertos}</td>
+                <td class="py-2 pr-2 text-center">${card.erros}</td>
+                <td class="py-2 pr-2 text-center">${formatSecondsToLabel(card.tempo_total)}</td>
+                <td class="py-2 pr-2 text-center">${formatSecondsToLabel(card.tempo_medio)}</td>
+                <td class="py-2 text-center font-semibold text-cyan-200">${card.aproveitamento}%</td>
+            </tr>
+        `).join('');
+
+        return `
+            <section class="mb-5 rounded-xl border border-slate-700 bg-slate-800/60 p-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mb-3">
+                    <div class="rounded-lg bg-slate-900/70 p-2">Acertos: <strong>${deck.acertos}</strong></div>
+                    <div class="rounded-lg bg-slate-900/70 p-2">Erros: <strong>${deck.erros}</strong></div>
+                    <div class="rounded-lg bg-slate-900/70 p-2">Revisões: <strong>${deck.total_revisoes}</strong></div>
+                    <div class="rounded-lg bg-slate-900/70 p-2">Tempo total: <strong>${formatSecondsToLabel(deck.tempo_total)}</strong></div>
+                </div>
+                <p class="text-sm text-slate-200 mb-3">Aproveitamento geral: <strong class="text-cyan-200">${deck.aproveitamento}%</strong></p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-slate-300 border-b border-slate-700">
+                            <tr>
+                                <th class="py-2 pr-2">Card</th>
+                                <th class="py-2 pr-2 text-center">Acertos</th>
+                                <th class="py-2 pr-2 text-center">Erros</th>
+                                <th class="py-2 pr-2 text-center">Tempo total</th>
+                                <th class="py-2 pr-2 text-center">Tempo médio</th>
+                                <th class="py-2 text-center">Aproveitamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>${cardsRows}</tbody>
+                    </table>
+                </div>
+            </section>
+        `;
+    }
+
+    $(document).on('click', '.btn-history-deck', function() {
+        const idDeck = $(this).data('id');
+        const tituloDeck = $(this).data('title') || 'Deck';
+        const container = $('#historicoConteudo');
+
+        $('#historicoTitulo').text(`Histórico do deck: ${tituloDeck}`);
+        container.html('<p class="text-slate-300">Carregando histórico...</p>');
+        $('#modalHistorico').removeClass('hidden');
+
+        $.ajax({
+            url: '/deck/review/historico',
+            type: 'GET',
+            data: {
+                id_deck: idDeck
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (!res.success) {
+                    container.html(`<p class="text-red-300">${res.message || 'Não foi possível carregar o histórico do deck.'}</p>`);
+                    return;
+                }
+
+                container.html(renderHistoricoRevisoes(res.data));
+            },
+            error: function() {
+                container.html('<p class="text-red-300">Erro de comunicação ao buscar o histórico do deck.</p>');
+            }
+        });
+    });
+
+    $('#fecharHistorico').on('click', function() {
+        $('#modalHistorico').addClass('hidden');
     });
 </script>

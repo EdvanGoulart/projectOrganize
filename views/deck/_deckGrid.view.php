@@ -50,6 +50,7 @@
 
                     <div class="flex w-full sm:w-auto flex-col sm:flex-row gap-2 sm:justify-end">
                         <a class="btn-edit-deck inline-flex justify-center items-center px-4 py-2 rounded-lg border border-slate-500 text-slate-100 hover:bg-slate-700/70 text-sm font-medium transition" data-id="<?= $d->id; ?>">Cards</a>
+                        <button type="button" class="btn-history-deck inline-flex justify-center items-center px-4 py-2 rounded-lg border border-cyan-400/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-100 text-sm font-semibold transition" data-id="<?= $d->id; ?>" data-title="<?= htmlspecialchars($d->title) ?>">Histórico</button>
                         <a href="/deck/practice?id=<?= $d->id ?>" class="inline-flex justify-center items-center px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold transition">Estudar</a>
                     </div>
                 </div>

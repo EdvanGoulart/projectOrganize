@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers\Revisao;
+namespace App\Controllers\Review;
 
 use App\Models\Gamification;
-use App\Models\Revisao_Deck;
+use App\Models\Review_Deck;
 
-class Revisao_DeckController
+class Review_DeckController
 {
 
     public function registerReview()
     {
 
-        $resultado = Revisao_Deck::create(
+        $resultado = Review_Deck::create(
             request()->post('id_deck'),
-            request()->post('tempo_gasto'),
-            request()->post('total_acertos'),
-            request()->post('total_erros'),
+            request()->post('time_spent'),
+            request()->post('total_correct'),
+            request()->post('total_error'),
         );
 
         if ((bool) ($resultado['registrado'] ?? false)) {
