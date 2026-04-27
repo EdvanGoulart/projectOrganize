@@ -8,6 +8,8 @@ use Core\Database;
 
 class Gamification
 {
+    private const BASE_XP_PER_LEVEL = 100;
+    private const XP_GROWTH_PER_LEVEL = 50;
     private const XP_TASK_CREATED = 15;
     private const XP_TASK_COMPLETED = 50;
     private const XP_REVIEW_COMPLETED = 40;
@@ -470,15 +472,26 @@ class Gamification
 
     private static function calculateLevel(int $xp): array
     {
-        $xpPerLevel = 100;
-        $level = intdiv($xp, $xpPerLevel) + 1;
-        $xpCurrentLevel = $xp % $xpPerLevel;
+        $level = 1;
+        $xpCurrentLevel = max(0, $xp);
+        $xpNextLevel = self::xpRequiredForLevel($level);
+
+        while ($xpCurrentLevel >= $xpNextLevel) {
+            $xpCurrentLevel -= $xpNextLevel;
+            $level++;
+            $xpNextLevel = self::xpRequiredForLevel($level);
+        }
 
         return [
             'level' => $level,
             'xpCurrentLevel' => $xpCurrentLevel,
-            'xpNextLevel' => $xpPerLevel,
+            'xpNextLevel' => $xpNextLevel,
         ];
+    }
+
+    private static function xpRequiredForLevel(int $level): int
+    {
+        return self::BASE_XP_PER_LEVEL + (($level - 1) * self::XP_GROWTH_PER_LEVEL);
     }
 
     private static function collectMetrics(int $userId): array

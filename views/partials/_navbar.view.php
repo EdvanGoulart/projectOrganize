@@ -27,12 +27,12 @@
         </ul>
     </div>
 
-    <div class="navbar-end">
+    <div class="navbar-end relative z-50">
         <ul class="menu menu-horizontal px-1">
             <li>
                 <details>
                     <summary>Olá, <?= auth()->name ?></summary>
-                    <ul class="bg-base-100 rounded-t-none p-2 right-0">
+                    <ul class="bg-base-100 rounded-t-none p-2 right-0 absolute z-50">
                         <li><a href="/perfil">Perfil</a></li>
                         <li><a href="/logout">Sair</a></li>
                     </ul>
